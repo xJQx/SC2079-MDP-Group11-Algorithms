@@ -11,9 +11,9 @@ const paths: AlgoOutputPaths["paths"] = [
         type: RobotActionEnum.MoveStraight,
         distance_straight: 130,
       },
-      // {
-      //   type: RobotActionEnum.Scan,
-      // },
+      {
+        type: RobotActionEnum.Scan,
+      },
     ],
   },
   // {

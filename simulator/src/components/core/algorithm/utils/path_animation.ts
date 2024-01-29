@@ -35,6 +35,9 @@ export const convertPathToStepwisePosition = (
           );
           tempRobotPosition = robotPositions[robotPositions.length - 1];
           break;
+        case RobotActionEnum.Scan:
+          robotPositions.push(handleScanAction());
+          break;
       }
     })
   );
@@ -85,4 +88,18 @@ export const handleMoveStraightAction = (
   }
 
   return robotPositions;
+};
+
+/**
+ * Converts Scan to `Position`, where x = -1, y = -1, theta = -1.
+ * @returns Position
+ * */
+export const handleScanAction = () => {
+  const robotPositionScanConfiguration: Position = {
+    x: -1,
+    y: -1,
+    theta: -1,
+  };
+
+  return robotPositionScanConfiguration;
 };
