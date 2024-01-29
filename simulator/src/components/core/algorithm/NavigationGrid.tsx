@@ -1,13 +1,15 @@
 import React from "react";
 import { GRID_TOTAL_HEIGHT, GRID_TOTAL_WIDTH } from "../../../constants";
 import { Position } from "../../../schemas/robot";
+import { Obstacle, ObstacleDirection } from "../../../schemas/obstacle";
 
 interface NavigationGridProps {
   robotPosition: Position;
+  obstacles: Obstacle[];
 }
 
 export const NavigationGrid = (props: NavigationGridProps) => {
-  const { robotPosition } = props;
+  const { robotPosition, obstacles } = props;
 
   /**
    * Creates a HTML Grid.
@@ -44,6 +46,21 @@ export const NavigationGrid = (props: NavigationGridProps) => {
                 : "body"
             )
           );
+        // Cell Contains an Obstacle
+        else if (
+          obstacles.filter((obstacle) => obstacle.x === x && obstacle.y === y)
+            .length > 0
+        ) {
+          currentRow.push(
+            createHTMLGridCellObstacle(
+              x,
+              y,
+              obstacles.filter(
+                (obstacle) => obstacle.x === x && obstacle.y === y
+              )[0].direction
+            )
+          );
+        }
         // Empty Cell
         else currentRow.push(createHTMLGridCellEmpty(x, y));
       }
@@ -95,6 +112,39 @@ const createHTMLGridCellRobot = (
       className={`border-2 border-orange-900 w-8 h-8 align-middle text-center ${
         type === "body" ? "bg-green-300" : "bg-blue-400"
       }`}
+    />
+  );
+};
+
+/**
+ * Creates a `<td />` for a cell that contains an Obstacle
+ * @used_by createHTMLGrid()
+ */
+const createHTMLGridCellObstacle = (
+  x: number,
+  y: number,
+  direction: ObstacleDirection
+) => {
+  let imageFaceBorderClassName = "";
+  switch (direction) {
+    case ObstacleDirection.N:
+      imageFaceBorderClassName = "border-t-4 border-t-red-700";
+      break;
+    case ObstacleDirection.S:
+      imageFaceBorderClassName = "border-b-4 border-b-red-700";
+      break;
+    case ObstacleDirection.E:
+      imageFaceBorderClassName = "border-r-4 border-r-red-700";
+      break;
+    case ObstacleDirection.W:
+      imageFaceBorderClassName = "border-l-4 border-l-red-700";
+      break;
+  }
+
+  return (
+    <td
+      id={`cell-${x}-${y}`}
+      className={`border border-orange-900 w-8 h-8 align-middle text-center bg-amber-400 ${imageFaceBorderClassName}`}
     />
   );
 };
