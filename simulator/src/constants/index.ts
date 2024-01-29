@@ -3,7 +3,7 @@
 // Robot's Environment - Grid Format
 const WIDTH_CM = 200;
 const HEIGHT_CM = 200;
-const GRID_BLOCK_SIZE_CM = 10; // *Size of each block in cm
+export const GRID_BLOCK_SIZE_CM = 10; // *Size of each block in cm
 
 export const GRID_TOTAL_WIDTH = WIDTH_CM / GRID_BLOCK_SIZE_CM; // 20
 export const GRID_TOTAL_HEIGHT = HEIGHT_CM / GRID_BLOCK_SIZE_CM; // 20
@@ -32,3 +32,6 @@ const TURNING_RADIUS_CM = 25;
 
 // Image Recognition
 const MAX_DISTANCE_FROM_IMAGE_CM = 20;
+
+// Grid Animation
+export const GRID_ANIMATION_SPEED = 100; // in milli-seconds

@@ -36,6 +36,7 @@ export const AppFeatureSelector = (props: AppFeatureSelectorProps) => {
         >
           {AppFeatures.map((currentFeature) => (
             <AppFeatureSelectorOptions
+              key={currentFeature}
               selectedFeature={selectedFeature}
               setSelectedFeature={setSelectedFeature}
               setIsOpen={setIsOpen}
