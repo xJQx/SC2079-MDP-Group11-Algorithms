@@ -32,7 +32,14 @@ export const NavigationGrid = (props: NavigationGridProps) => {
             createHTMLGridCellRobot(
               x,
               y,
-              x === robotPosition.x + 1 && y === robotPosition.y + 2
+              x ===
+                robotPosition.x +
+                  convertRobotThetaToCameraOffsetBlock(
+                    robotPosition.theta
+                  )[0] &&
+                y ===
+                  robotPosition.y +
+                    convertRobotThetaToCameraOffsetBlock(robotPosition.theta)[1]
                 ? "camera"
                 : "body"
             )
@@ -62,7 +69,7 @@ export const NavigationGrid = (props: NavigationGridProps) => {
   );
 };
 
-// ---------- Helper Functions ---------- //
+// ---------- Helper Functions - HTML ---------- //
 /**
  * Creates a `<td />` for an empty cell
  * @used_by createHTMLGrid()
@@ -85,8 +92,8 @@ const createHTMLGridCellRobot = (
   return (
     <td
       id={`cell-${x}-${y}`}
-      className={`border border-orange-900 w-8 h-8 ${
-        type === "body" ? "bg-green-500" : "bg-yellow-500"
+      className={`border-2 border-orange-900 w-8 h-8 align-middle text-center ${
+        type === "body" ? "bg-green-300" : "bg-blue-400"
       }`}
     />
   );
@@ -110,4 +117,32 @@ const addHTMLGridLables = (grid: React.ReactNode[][]) => {
   }
   grid.push(gridColumnLabels);
   return grid;
+};
+
+// ---------- Helper Functions - Calculations ---------- //
+/**
+ * Converts a Robot's Theta rotation to the associated Camera Offset on the grid
+ * @returns (x, y) offset of the robot's camera from the bottom left corner of the robot
+ */
+const convertRobotThetaToCameraOffsetBlock = (theta: number) => {
+  // -0.785 to 0.785 -> East
+  if (-Math.PI / 4 < theta && theta < Math.PI / 4) {
+    return [2, 1];
+  }
+  // 0.785 to 2.355 -> North
+  else if (Math.PI / 4 <= theta && theta <= (3 * Math.PI) / 4) {
+    return [1, 2];
+  }
+  // (2.355 to 3.14) or (-2.355 to -3.14) -> West
+  else if (
+    ((3 * Math.PI) / 4 < theta && theta <= Math.PI) ||
+    (-Math.PI <= theta && theta < (-3 * Math.PI) / 4)
+  ) {
+    return [0, 1];
+  }
+  // -2.355 to -0.785 -> South
+  else if ((-3 * Math.PI) / 4 <= theta && theta <= -Math.PI / 4) {
+    return [1, 0];
+  }
+  return [0, 0];
 };
