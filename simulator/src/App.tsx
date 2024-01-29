@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { NavigationGrid } from "./components/core";
 import { Layout } from "./components/misc";
 import { AppFeatureSelector, AppFeaturesEnum } from "./components/common";
+import { AlgorithmCore } from "./components/core/algorithm";
+import { SymbolRecognitionCore } from "./components/core/symbol_recognition";
+import { RasberryPiCore } from "./components/core/rasberry_pi";
 
 function App() {
   const [selectedFeature, setSelectedFeature] = useState<AppFeaturesEnum>(
@@ -15,7 +17,13 @@ function App() {
           selectedFeature={selectedFeature}
           setSelectedFeature={setSelectedFeature}
         />
-        <NavigationGrid />
+
+        {/* Feature-specific Content */}
+        {selectedFeature === AppFeaturesEnum.Algorithm && <AlgorithmCore />}
+        {selectedFeature === AppFeaturesEnum.Symbol_Recognition && (
+          <SymbolRecognitionCore />
+        )}
+        {selectedFeature === AppFeaturesEnum.Rasberry_Pi && <RasberryPiCore />}
       </Layout>
     </div>
   );
