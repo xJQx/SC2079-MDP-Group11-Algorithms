@@ -34,10 +34,11 @@ export const AlgorithmCore = () => {
         // Handle Scan Animation
         if (
           robotPositions[nextStep].x === -1 &&
-          robotPositions[nextStep].y === -1 &&
-          robotPositions[nextStep].theta === -1
+          robotPositions[nextStep].y === -1
         ) {
-          toast.success("Image Scanned!");
+          if (robotPositions[nextStep].theta === -1)
+            toast.success("Image Scanned!");
+          else toast("Scanning image...");
         } else {
           setCurrentRobotPosition(robotPositions[nextStep]);
         }
@@ -53,10 +54,11 @@ export const AlgorithmCore = () => {
       // Handle Scan Animation
       if (
         robotPositions[currentStep].x === -1 &&
-        robotPositions[currentStep].y === -1 &&
-        robotPositions[currentStep].theta === -1
+        robotPositions[currentStep].y === -1
       ) {
-        toast.success("Image Scanned!");
+        if (robotPositions[currentStep].theta === -1)
+          toast.success("Image Scanned!");
+        else toast("Scanning image...");
       } else {
         setCurrentRobotPosition(robotPositions[currentStep]);
       }
