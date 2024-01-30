@@ -1,7 +1,7 @@
 import { AlgoTestDataInterface } from ".";
 import { AlgoOutputPaths } from "../../schemas/algo_output";
 import { Obstacle, ObstacleDirection } from "../../schemas/obstacle";
-import { RobotActionEnum } from "../../schemas/robot";
+import { RobotActionEnum, TurnDirection } from "../../schemas/robot";
 
 const paths: AlgoOutputPaths["paths"] = [
   {
@@ -25,25 +25,25 @@ const paths: AlgoOutputPaths["paths"] = [
         type: RobotActionEnum.MoveBack,
         distance_straight: 10,
       },
-      // {
-      //   type: RobotActionEnum.CurveRight,
-      //   distance_arc: 20,
-      //   theta: Math.PI,
-      //   turn_direction: TurnDirection.Clockwise,
-      // },
-      // {
-      //   type: RobotActionEnum.CurveLeft,
-      //   distance_arc: 20,
-      //   theta: Math.PI / 2,
-      //   turn_direction: TurnDirection.Anticlockwise,
-      // },
-      // {
-      //   type: RobotActionEnum.MoveStraight,
-      //   distance_straight: 10,
-      // },
-      // {
-      //   type: RobotActionEnum.Scan,
-      // },
+      {
+        type: RobotActionEnum.CurveRight,
+        distance_arc: 20,
+        theta: Math.PI,
+        turn_direction: TurnDirection.Clockwise,
+      },
+      {
+        type: RobotActionEnum.CurveLeft,
+        distance_arc: 20,
+        theta: Math.PI / 2,
+        turn_direction: TurnDirection.Anticlockwise,
+      },
+      {
+        type: RobotActionEnum.MoveStraight,
+        distance_straight: 10,
+      },
+      {
+        type: RobotActionEnum.Scan,
+      },
     ],
   },
 ];

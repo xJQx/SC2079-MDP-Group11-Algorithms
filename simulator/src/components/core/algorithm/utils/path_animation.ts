@@ -1,14 +1,20 @@
 import {
   GRID_BLOCK_SIZE_CM,
   ROBOT_INITIAL_DIRECTION,
+  antiClockwiseOffsets,
+  clockwiseOffsets,
 } from "../../../../constants";
 import { AlgoOutputPaths } from "../../../../schemas/algo_output";
 import {
   Position,
   RobotActionEnum,
   RobotDirection,
+  TurnDirection,
 } from "../../../../schemas/robot";
-import { convertThetaToDirection } from "./conversions";
+import {
+  convertThetaRotationToFinalDirection,
+  convertThetaToDirection,
+} from "./conversions";
 
 /** Converts algorithm's output paths into step-wise Robot's `Positions` */
 export const convertPathToStepwisePosition = (
@@ -45,6 +51,28 @@ export const convertPathToStepwisePosition = (
           );
           tempRobotPosition = robotPositions[robotPositions.length - 1];
           break;
+        case RobotActionEnum.CurveLeft:
+          robotPositions = robotPositions.concat(
+            handleCurveAction(
+              tempRobotPosition,
+              step.distance_arc ?? 0,
+              step.theta ?? 0,
+              step.turn_direction ?? TurnDirection.Anticlockwise
+            )
+          );
+          tempRobotPosition = robotPositions[robotPositions.length - 1];
+          break;
+        case RobotActionEnum.CurveRight:
+          robotPositions = robotPositions.concat(
+            handleCurveAction(
+              tempRobotPosition,
+              step.distance_arc ?? 0,
+              step.theta ?? 0,
+              step.turn_direction ?? TurnDirection.Clockwise
+            )
+          );
+          tempRobotPosition = robotPositions[robotPositions.length - 1];
+          break;
         case RobotActionEnum.Scan:
           robotPositions = robotPositions.concat(handleScanAction());
           break;
@@ -56,6 +84,8 @@ export const convertPathToStepwisePosition = (
 
 /**
  * Converts MoveStraight from total straight_distance (cm) to `Position[]` for each timestep / cell movement
+ * @param startPosition: Position
+ * @param distance_straight: in cm
  * @param forward Set to `false` if robot is taking MoveBack action
  * @returns Position[]
  * */
@@ -103,12 +133,18 @@ export const handleMoveStraightAction = (
 };
 
 /**
- * Converts MoveStraight from total straight_distance (cm) to `Position[]` for each timestep / cell movement
+ * Converts CurveLeft / CurveRight from `distance_arc` (cm), `theta` (radian), and `turn_direction` to `Position[]` for each timestep / cell movement
+ * @param startPosition: Position
+ * @param distance_arc in cm
+ * @param theta in radian
+ * @param turn_direction "Clockwise" or "Anticlockwise"
  * @returns Position[]
  * */
-export const handleMoveBackAction = (
+export const handleCurveAction = (
   startPosition: Position,
-  distance_straight: number
+  distance_arc: number,
+  theta: number,
+  turn_direction: TurnDirection
 ) => {
   const robotPositions: Position[] = [];
 
@@ -117,32 +153,48 @@ export const handleMoveBackAction = (
     y: startPosition.y,
     theta: startPosition.theta,
   };
-  let distanceLeft = distance_straight;
-  const robotDirection = convertThetaToDirection(startPosition.theta);
 
-  while (distanceLeft > 0) {
+  // let distanceLeft = distance_arc;
+  const robotStartDirection = convertThetaToDirection(startPosition.theta);
+  let robotCurrentDirection: RobotDirection = robotStartDirection;
+
+  let thetaLeft = theta;
+  while (thetaLeft > 0) {
     let currentPositionTemp: Position = {
       x: currentPosition.x,
       y: currentPosition.y,
       theta: currentPosition.theta,
     };
-    switch (robotDirection) {
-      case RobotDirection.N:
-        currentPositionTemp.y += 1;
-        break;
-      case RobotDirection.S:
-        currentPositionTemp.y -= 1;
-        break;
-      case RobotDirection.E:
-        currentPositionTemp.x += 1;
-        break;
-      case RobotDirection.W:
-        currentPositionTemp.x -= 1;
-        break;
+
+    const robotEndDirection = convertThetaRotationToFinalDirection(
+      robotCurrentDirection,
+      Math.PI / 2,
+      turn_direction
+    );
+
+    // Offsets
+    const offsets =
+      turn_direction === TurnDirection.Clockwise
+        ? clockwiseOffsets[robotCurrentDirection][robotEndDirection]
+        : antiClockwiseOffsets[robotCurrentDirection][robotEndDirection];
+
+    currentPositionTemp.x += offsets[0];
+    currentPositionTemp.y += offsets[1];
+    if (turn_direction === TurnDirection.Clockwise) {
+      currentPositionTemp.theta =
+        (currentPositionTemp.theta - Math.PI / 2) % Math.PI;
+    } else {
+      currentPositionTemp.theta =
+        (currentPositionTemp.theta + Math.PI / 2) % Math.PI;
     }
+
+    // *Push to robotPositions twice to stimulate delay
     robotPositions.push(currentPositionTemp);
+    robotPositions.push(currentPositionTemp);
+
     currentPosition = currentPositionTemp;
-    distanceLeft -= GRID_BLOCK_SIZE_CM;
+    robotCurrentDirection = robotEndDirection;
+    thetaLeft -= Math.PI / 2;
   }
 
   return robotPositions;
