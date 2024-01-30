@@ -108,6 +108,8 @@ export const AlgorithmCore = () => {
       <TestSelector
         selectedTestEnum={selectedTestEnum}
         setSelectedTestEnum={setSelectedTestEnum}
+        selectedTest={selectedTest}
+        setSelectedTest={setSelectedTest}
       />
 
       {/* Animation */}
