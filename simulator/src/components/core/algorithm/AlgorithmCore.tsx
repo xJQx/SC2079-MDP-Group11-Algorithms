@@ -6,7 +6,7 @@ import {
   GRID_ANIMATION_SPEED,
   ROBOT_INITIAL_POSITION,
 } from "../../../constants";
-import { FaPlay } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaPause, FaPlay } from "react-icons/fa";
 import { convertPathToStepwisePosition } from "./utils/path_animation";
 import {
   AlgoTestDataInterface,
@@ -116,18 +116,50 @@ export const AlgorithmCore = () => {
           {/* Start Animation */}
           <Button
             onClick={() => {
-              setStartAnimation(true);
-              setCurrentRobotPosition(robotPositions[0]);
-              setCurrentStep(0);
+              if (startAnimation) {
+                // Stop Animation
+                setStartAnimation(false);
+              } else {
+                // Start Animation
+                setIsManualAnimation(false);
+                setStartAnimation(true);
+                if (currentStep === totalSteps - 1) {
+                  setCurrentRobotPosition(robotPositions[0]);
+                  setCurrentStep(0);
+                }
+              }
             }}
           >
-            <span>Start Animation</span>
-            <FaPlay />
+            <span>{startAnimation ? "Stop Animation" : "Start Animation"}</span>
+            {startAnimation ? <FaPause /> : <FaPlay />}
           </Button>
 
           {/* Slider */}
-          <label htmlFor="steps-range" className="font-bold text-[14px]">
-            Step: {currentStep + 1} / {totalSteps}
+          <label
+            htmlFor="steps-range"
+            className="font-bold text-[14px] flex gap-2 items-center"
+          >
+            <FaChevronLeft
+              className="cursor-pointer"
+              onClick={() => {
+                if (!startAnimation && currentStep - 1 >= 0) {
+                  setIsManualAnimation(true);
+                  setCurrentStep((prev) => prev - 1);
+                }
+              }}
+            />
+            <span>
+              Step: {currentStep + 1} / {totalSteps}
+            </span>
+            <FaChevronRight
+              className="cursor-pointer"
+              onClick={() => {
+                if (!startAnimation && currentStep + 1 < totalSteps) {
+                  setIsManualAnimation(true);
+                  setCurrentStep((prev) => prev + 1);
+                }
+              }}
+            />
           </label>
           <input
             id="steps-range"
