@@ -2,31 +2,55 @@ import React, { useEffect, useState } from "react";
 import { NavigationGrid } from "./NavigationGrid";
 import { CoreContainter } from "../CoreContainter";
 import { Position } from "../../../schemas/robot";
-import { GRID_ANIMATION_SPEED } from "../../../constants";
+import {
+  GRID_ANIMATION_SPEED,
+  ROBOT_INITIAL_POSITION,
+} from "../../../constants";
 import { FaPlay } from "react-icons/fa";
 import { convertPathToStepwisePosition } from "./utils/path_animation";
-import { AlgoTestBasicMock } from "../../../tests/algorithm";
+import {
+  AlgoTestDataInterface,
+  AlgoTestEnum,
+  AlgoTestEnumMapper,
+} from "../../../tests/algorithm";
 import { Button } from "../../common";
 import toast from "react-hot-toast";
+import { TestSelector } from "./TestSelector";
 
 export const AlgorithmCore = () => {
-  // Mock Data -> To Remove
-  const paths = AlgoTestBasicMock.paths;
-  const obstacles = AlgoTestBasicMock.obstacles;
+  // Robot's Positions
+  const [robotPositions, setRobotPositions] = useState<Position[]>();
+  const totalSteps = robotPositions?.length ?? 0;
 
-  const robotPositions: Position[] = convertPathToStepwisePosition(paths);
-  const totalSteps = robotPositions.length;
+  // Select Tests
+  const [selectedTestEnum, setSelectedTestEnum] = useState<AlgoTestEnum>(
+    AlgoTestEnum.Basic_Mock
+  );
+  const [selectedTest, setSelectedTest] = useState<AlgoTestDataInterface>(
+    AlgoTestEnumMapper[AlgoTestEnum.Basic_Mock]
+  );
 
+  // Select Tests
+  useEffect(() => {
+    const selectedTest = AlgoTestEnumMapper[selectedTestEnum];
+    setSelectedTest(selectedTest);
+
+    if (selectedTest.paths) {
+      setRobotPositions(convertPathToStepwisePosition(selectedTest.paths));
+    } else {
+      // TODO: Fetch Paths from Backend Algorithm
+    }
+  }, [selectedTestEnum]);
+
+  // Animation
   const [isManualAnimation, setIsManualAnimation] = useState(false);
   const [startAnimation, setStartAnimation] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [currentRobotPosition, setCurrentRobotPosition] = useState<Position>(
-    robotPositions[0]
-  );
+  const [currentRobotPosition, setCurrentRobotPosition] = useState<Position>();
 
   // Animation
   useEffect(() => {
-    if (startAnimation && currentStep + 1 < totalSteps) {
+    if (robotPositions && startAnimation && currentStep + 1 < totalSteps) {
       const timer = setTimeout(() => {
         const nextStep = currentStep + 1;
         setCurrentStep(nextStep);
@@ -49,7 +73,11 @@ export const AlgorithmCore = () => {
         }
       }, GRID_ANIMATION_SPEED);
       return () => clearTimeout(timer);
-    } else if (isManualAnimation && currentStep < totalSteps) {
+    } else if (
+      robotPositions &&
+      isManualAnimation &&
+      currentStep < totalSteps
+    ) {
       // User manually click through the steps
       // Handle Scan Animation
       if (
@@ -68,45 +96,53 @@ export const AlgorithmCore = () => {
 
   return (
     <CoreContainter title="Algorithm Simulator">
-      {/* Animation */}
-      <div className="mt-2 mb-4 flex flex-col justify-center items-center gap-2">
-        {/* Start Animation */}
-        <Button
-          onClick={() => {
-            setStartAnimation(true);
-            setCurrentRobotPosition(robotPositions[0]);
-            setCurrentStep(0);
-          }}
-        >
-          <span>Start Animation</span>
-          <FaPlay />
-        </Button>
+      {/* Select Tests */}
+      <TestSelector
+        selectedTestEnum={selectedTestEnum}
+        setSelectedTestEnum={setSelectedTestEnum}
+      />
 
-        {/* Slider */}
-        <label htmlFor="steps-range" className="font-bold text-[14px]">
-          Step: {currentStep + 1} / {totalSteps}
-        </label>
-        <input
-          id="steps-range"
-          type="range"
-          min={0}
-          max={totalSteps - 1}
-          value={currentStep}
-          onChange={(e) => {
-            setCurrentStep(Number(e.target.value));
-            setIsManualAnimation(true);
-          }}
-          onPointerUp={() => setIsManualAnimation(false)}
-          step={1}
-          className="w-1/2 h-2 bg-orange-900 rounded-lg appearance-none cursor-pointer"
-          disabled={startAnimation === true}
-        />
-      </div>
+      {/* Animation */}
+      {robotPositions && (
+        <div className="mt-2 mb-4 flex flex-col justify-center items-center gap-2">
+          {/* Start Animation */}
+          <Button
+            onClick={() => {
+              setStartAnimation(true);
+              setCurrentRobotPosition(robotPositions[0]);
+              setCurrentStep(0);
+            }}
+          >
+            <span>Start Animation</span>
+            <FaPlay />
+          </Button>
+
+          {/* Slider */}
+          <label htmlFor="steps-range" className="font-bold text-[14px]">
+            Step: {currentStep + 1} / {totalSteps}
+          </label>
+          <input
+            id="steps-range"
+            type="range"
+            min={0}
+            max={totalSteps - 1}
+            value={currentStep}
+            onChange={(e) => {
+              setCurrentStep(Number(e.target.value));
+              setIsManualAnimation(true);
+            }}
+            onPointerUp={() => setIsManualAnimation(false)}
+            step={1}
+            className="w-1/2 h-2 bg-orange-900 rounded-lg appearance-none cursor-pointer"
+            disabled={startAnimation === true}
+          />
+        </div>
+      )}
 
       {/* Navigation Grid */}
       <NavigationGrid
-        robotPosition={currentRobotPosition}
-        obstacles={obstacles}
+        robotPosition={currentRobotPosition ?? ROBOT_INITIAL_POSITION}
+        obstacles={selectedTest.obstacles}
       />
     </CoreContainter>
   );

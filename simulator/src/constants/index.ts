@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { Position } from "../schemas/robot";
+
 // Robot's Environment - Grid Format
 const WIDTH_CM = 200;
 const HEIGHT_CM = 200;
@@ -26,6 +28,11 @@ export const ROBOT_GRID_WIDTH = ROBOT_WIDTH_CM / GRID_BLOCK_SIZE_CM; // 3
 export const ROBOT_GRID_HEIGHT = ROBOT_HEIGHT_CM / GRID_BLOCK_SIZE_CM; // 3
 
 export const ROBOT_INITIAL_DIRECTION = Math.PI / 2;
+export const ROBOT_INITIAL_POSITION: Position = {
+  x: 0,
+  y: 0,
+  theta: ROBOT_INITIAL_DIRECTION,
+};
 
 // Robot Movement
 const TURNING_RADIUS_CM = 25;

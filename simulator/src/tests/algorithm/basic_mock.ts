@@ -1,3 +1,4 @@
+import { AlgoTestDataInterface } from ".";
 import { AlgoOutputPaths } from "../../schemas/algo_output";
 import { Obstacle, ObstacleDirection } from "../../schemas/obstacle";
 import { RobotActionEnum } from "../../schemas/robot";
@@ -52,7 +53,7 @@ const obstacles: Obstacle[] = [
   { x: 1, y: 18, direction: ObstacleDirection.S },
 ];
 
-export const AlgoTestBasicMock = {
+export const AlgoTestBasicMock: AlgoTestDataInterface = {
   paths: paths,
   obstacles: obstacles,
 };
