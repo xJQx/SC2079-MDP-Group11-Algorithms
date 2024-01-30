@@ -40,7 +40,11 @@ export const AlgorithmCore = () => {
       setRobotPositions(convertPathToStepwisePosition(selectedTest.paths));
     } else {
       // TODO: Fetch Paths from Backend Algorithm
+      setRobotPositions([ROBOT_INITIAL_POSITION]);
+      setCurrentRobotPosition(ROBOT_INITIAL_POSITION);
+      toast.error("Server is offline");
     }
+    setCurrentStep(0);
   }, [selectedTestEnum]);
 
   // Animation

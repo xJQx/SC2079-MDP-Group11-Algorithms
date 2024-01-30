@@ -28,6 +28,7 @@ export const TestSelector = (props: TestSelectorProps) => {
           <div className="flex flex-col items-start gap-2">
             {AlgoTestEnumsList.map((algoTest) => (
               <TestItem
+                key={algoTest}
                 test={algoTest}
                 isSelected={algoTest === selectedTestEnum}
                 setSelectedTestEnum={setSelectedTestEnum}
