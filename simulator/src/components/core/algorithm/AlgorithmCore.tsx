@@ -16,6 +16,7 @@ import {
 import { Button } from "../../common";
 import toast from "react-hot-toast";
 import { TestSelector } from "./TestSelector";
+import { ServerStatus } from "./ServerStatus";
 
 export const AlgorithmCore = () => {
   // Robot's Positions
@@ -96,6 +97,9 @@ export const AlgorithmCore = () => {
 
   return (
     <CoreContainter title="Algorithm Simulator">
+      {/* Server Status */}
+      <ServerStatus />
+
       {/* Select Tests */}
       <TestSelector
         selectedTestEnum={selectedTestEnum}
