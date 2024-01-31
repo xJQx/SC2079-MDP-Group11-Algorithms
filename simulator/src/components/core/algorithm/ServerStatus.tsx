@@ -2,18 +2,26 @@ import React, { useState } from "react";
 import { Button } from "../../common";
 import { HiOutlineStatusOnline, HiOutlineStatusOffline } from "react-icons/hi";
 import toast from "react-hot-toast";
+import useFetch from "../../../hooks/useFetch";
 
 export const ServerStatus = () => {
   const [isServerOnline, setIsServerOnline] = useState(false);
+  const fetch = useFetch();
 
-  const checkServerOnlineStatus = () => {
-    // TODO: Connect to backend to see if backend is running
-    if (isServerOnline) {
+  const checkServerOnlineStatus = async () => {
+    // TODO: Fetch from backend to see if backend is running
+    try {
+      const isServerOnline: boolean = await fetch.get("/is-server-online");
+
+      if (isServerOnline) {
+        setIsServerOnline(true);
+        toast.success("Server online!");
+      }
+    } catch (e) {
+    } finally {
+      setIsServerOnline(false);
       toast.error("Server offline!");
-    } else {
-      toast.success("Server online!");
     }
-    setIsServerOnline((prev) => !prev);
   };
 
   return (
