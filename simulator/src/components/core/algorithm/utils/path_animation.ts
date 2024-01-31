@@ -1,4 +1,6 @@
 import {
+  ARTIFICAL_DELAY_CURVE,
+  ARTIFICAL_DELAY_SCAN,
   GRID_BLOCK_SIZE_CM,
   ROBOT_INITIAL_DIRECTION,
   antiClockwiseOffsets,
@@ -189,8 +191,9 @@ export const handleCurveAction = (
     }
 
     // *Push to robotPositions twice to stimulate delay
-    robotPositions.push(currentPositionTemp);
-    robotPositions.push(currentPositionTemp);
+    for (let i = 0; i < ARTIFICAL_DELAY_CURVE; i++) {
+      robotPositions.push(currentPositionTemp);
+    }
 
     currentPosition = currentPositionTemp;
     robotCurrentDirection = robotEndDirection;
@@ -206,10 +209,14 @@ export const handleCurveAction = (
  * @note (-1, -1, -1) means scanning done
  * */
 export const handleScanAction = () => {
-  const robotPositionScanConfigurations: Position[] = [
-    { x: -1, y: -1, theta: -2 },
-    { x: -1, y: -1, theta: -1 },
-  ];
+  const robotPositionScanConfigurations: Position[] = [];
+  for (let i = 0; i < ARTIFICAL_DELAY_SCAN; i++) {
+    if (i === ARTIFICAL_DELAY_SCAN - 1) {
+      robotPositionScanConfigurations.push({ x: -1, y: -1, theta: -1 });
+    } else {
+      robotPositionScanConfigurations.push({ x: -1, y: -1, theta: 0 });
+    }
+  }
 
   return robotPositionScanConfigurations;
 };

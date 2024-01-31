@@ -144,3 +144,5 @@ const MAX_DISTANCE_FROM_IMAGE_CM = 20;
 
 // Grid Animation
 export const GRID_ANIMATION_SPEED = 100; // in milli-seconds
+export const ARTIFICAL_DELAY_CURVE = 2; // per gird timestep
+export const ARTIFICAL_DELAY_SCAN = 2; // per gird timestep

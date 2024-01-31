@@ -22,8 +22,8 @@ export const ServerStatus = () => {
         title="Check Server Status"
         className={`${
           isServerOnline
-            ? "text-green-500 hover:text-green-600"
-            : "text-rose-500 hover:text-rose-600"
+            ? "!text-green-500 hover:!text-green-600"
+            : "!text-rose-500 hover:!text-rose-600"
         }`}
         onClick={checkServerOnlineStatus}
       >
