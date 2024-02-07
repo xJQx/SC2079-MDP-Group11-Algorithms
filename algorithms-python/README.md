@@ -79,7 +79,7 @@ This Algorithm Repo uses FASTAPI and HTTPS + JSON protocol to transmit infomatio
 
 ### Input Schema
 
-```json
+```javascript
 {
   cat: "obstacles",
   value: {
@@ -96,7 +96,7 @@ This Algorithm Repo uses FASTAPI and HTTPS + JSON protocol to transmit infomatio
 
 ### Output Schema
 
-```json
+```javascript
 {
   positions: {
     x: int,         // in cm
