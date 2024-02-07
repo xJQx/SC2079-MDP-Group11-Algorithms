@@ -40,9 +40,9 @@ class AlgoInput(BaseModel):
 
 # Output
 class AlgoOutputSimulatorPosition(BaseModel):
-  x: int
-  y: int
-  theta: float
+  x: int # in cm
+  y: int # in cm
+  theta: float # in radian
 
 class AlgoOutputSimulator(BaseModel):
   positions: list[AlgoOutputSimulatorPosition]
