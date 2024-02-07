@@ -66,9 +66,10 @@ export const TestSelector = (props: TestSelectorProps) => {
       obstacles: [
         ...selectedTest.obstacles,
         {
+          id: selectedTest.obstacles.length,
           x: customObstacle_X,
           y: customObstacle_Y,
-          direction: customObstacle_Direction,
+          d: customObstacle_Direction,
         },
       ],
     };
@@ -279,7 +280,7 @@ interface CustomObstacleItemProps {
 
 const CustomObstacleItem = (props: CustomObstacleItemProps) => {
   const { setSelectedTest, obstacle } = props;
-  const { x, y, direction } = obstacle;
+  const { x, y, d } = obstacle;
 
   const handleRemoveObstacle = () => {
     setSelectedTest((prev) => {
@@ -299,7 +300,7 @@ const CustomObstacleItem = (props: CustomObstacleItemProps) => {
       <FaCircle className="text-[8px]" />
       <span>X: {x},</span>
       <span>Y: {y},</span>
-      <span>Face: {direction}</span>
+      <span>Face: {d}</span>
       <MdDelete
         title="Remove"
         className="text-[20px] hover:text-red-600 cursor-pointer"

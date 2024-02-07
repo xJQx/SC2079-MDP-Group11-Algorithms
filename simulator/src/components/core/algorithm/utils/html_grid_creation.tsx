@@ -50,7 +50,7 @@ export const createHTMLGrid = (
             y,
             obstacles.filter(
               (obstacle) => obstacle.x === x && obstacle.y === y
-            )[0].direction
+            )[0].d
           )
         );
       }
