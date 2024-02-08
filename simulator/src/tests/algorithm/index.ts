@@ -3,6 +3,7 @@ import { AlgoTestBasicMock } from "./basic_mock";
 import { AlgoTestBasicUTurn } from "./basic_u_turn";
 import { AlgoTestCorners } from "./corners";
 import { AlgoTestCustom } from "./custom";
+import { AlgoTestObstacles_5_Basic } from "./obstacles_5";
 import { AlgoTestObstacles_7 } from "./obstacles_7";
 import { AlgoTestShapes_V } from "./shapes";
 
@@ -20,6 +21,7 @@ export enum AlgoTestEnum {
   Corners = "Corners",
   Obstacles_7 = "7 Obstacles",
   Shapes_V = "V Shape",
+  Obstacles_5_Basic = "5 Obstacles (Basic)",
 }
 
 export const AlgoTestEnumsList = [
@@ -29,6 +31,7 @@ export const AlgoTestEnumsList = [
   AlgoTestEnum.Corners,
   AlgoTestEnum.Obstacles_7,
   AlgoTestEnum.Shapes_V,
+  AlgoTestEnum.Obstacles_5_Basic,
 ];
 
 export const AlgoTestEnumMapper = {
@@ -38,6 +41,7 @@ export const AlgoTestEnumMapper = {
   [AlgoTestEnum.Corners]: AlgoTestCorners,
   [AlgoTestEnum.Obstacles_7]: AlgoTestObstacles_7,
   [AlgoTestEnum.Shapes_V]: AlgoTestShapes_V,
+  [AlgoTestEnum.Obstacles_5_Basic]: AlgoTestObstacles_5_Basic,
 };
 
 // Specific Test Exports
@@ -47,3 +51,4 @@ export { AlgoTestBasicUTurn } from "./basic_u_turn";
 export { AlgoTestCorners } from "./corners";
 export { AlgoTestObstacles_7 } from "./obstacles_7";
 export { AlgoTestShapes_V } from "./shapes";
+export { AlgoTestObstacles_5_Basic } from "./obstacles_5";
