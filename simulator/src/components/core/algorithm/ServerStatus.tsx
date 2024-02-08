@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../common";
 import { HiOutlineStatusOnline, HiOutlineStatusOffline } from "react-icons/hi";
 import toast from "react-hot-toast";
@@ -9,20 +9,23 @@ export const ServerStatus = () => {
   const fetch = useFetch();
 
   const checkServerOnlineStatus = async () => {
-    // TODO: Fetch from backend to see if backend is running
     try {
-      const isServerOnline: boolean = await fetch.get("/is-server-online");
+      const isServerOnline = await fetch.get("/");
 
       if (isServerOnline) {
         setIsServerOnline(true);
         toast.success("Server online!");
       }
     } catch (e) {
-    } finally {
       setIsServerOnline(false);
       toast.error("Server offline!");
     }
   };
+
+  useEffect(() => {
+    checkServerOnlineStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="mt-2 mb-4 flex justify-center items-center">

@@ -14,7 +14,11 @@ import {
   AlgoTestEnum,
   AlgoTestEnumsList,
 } from "../../../tests/algorithm";
-import { Obstacle, ObstacleDirection } from "../../../schemas/obstacle";
+import {
+  Obstacle,
+  ObstacleDirection,
+  ObstacleDirectionStringMapping,
+} from "../../../schemas/obstacle";
 import toast from "react-hot-toast";
 import { ROBOT_GRID_HEIGHT, ROBOT_GRID_WIDTH } from "../../../constants";
 
@@ -62,7 +66,6 @@ export const TestSelector = (props: TestSelectorProps) => {
     }
 
     const updated = {
-      paths: selectedTest.paths,
       obstacles: [
         ...selectedTest.obstacles,
         {
@@ -289,7 +292,6 @@ const CustomObstacleItem = (props: CustomObstacleItemProps) => {
       );
 
       return {
-        paths: prev.paths,
         obstacles: cleanedObstacles,
       };
     });
@@ -300,7 +302,7 @@ const CustomObstacleItem = (props: CustomObstacleItemProps) => {
       <FaCircle className="text-[8px]" />
       <span>X: {x},</span>
       <span>Y: {y},</span>
-      <span>Face: {d}</span>
+      <span>Face: {ObstacleDirectionStringMapping[d]}</span>
       <MdDelete
         title="Remove"
         className="text-[20px] hover:text-red-600 cursor-pointer"

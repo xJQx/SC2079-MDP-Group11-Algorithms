@@ -7,8 +7,12 @@ const WIDTH_CM = 200;
 const HEIGHT_CM = 200;
 export const GRID_BLOCK_SIZE_CM = 10; // *Size of each block in cm
 
-export const GRID_TOTAL_WIDTH = WIDTH_CM / GRID_BLOCK_SIZE_CM; // 20
-export const GRID_TOTAL_HEIGHT = HEIGHT_CM / GRID_BLOCK_SIZE_CM; // 20
+const ALGO_GRID_BLOCK_SIZE_CM = 5; // Size of each block in cm (used in the algo backend)
+export const ALGO_GRID_BLOCK_SIZE_MULTIPLIER =
+  GRID_BLOCK_SIZE_CM / ALGO_GRID_BLOCK_SIZE_CM; // 2
+
+export const GRID_TOTAL_WIDTH = WIDTH_CM / GRID_BLOCK_SIZE_CM; // 40
+export const GRID_TOTAL_HEIGHT = HEIGHT_CM / GRID_BLOCK_SIZE_CM; // 40
 
 export const START_ZONE_X = 0;
 export const START_ZONE_Y = 0;
@@ -34,11 +38,12 @@ export const ROBOT_INITIAL_POSITION: Position = {
   theta: ROBOT_INITIAL_DIRECTION,
 };
 
-// Robot Turning Movement
+/** @deprecated  Robot Turning Movement */
 export const ROBOT_TURNING_RADIUS_CM = 30;
 export const ROBOT_GRID_TURNING_RADIUS =
-  ROBOT_TURNING_RADIUS_CM / GRID_BLOCK_SIZE_CM; // 3
+  ROBOT_TURNING_RADIUS_CM / GRID_BLOCK_SIZE_CM; // 6
 
+/** @deprecated */
 interface turnOffsetInterface {
   [RobotDirection.N]: {
     [RobotDirection.N]: [number, number];
@@ -67,7 +72,7 @@ interface turnOffsetInterface {
 }
 
 /**
- * Maps offsets between two robot direction configuration
+ * @deprecated Maps offsets between two robot direction configuration
  * @key [RobotDirection.FROM]: { [RobotDirection.TO]: [x, y] }
  * @returns [x, y] offsets
  * */
@@ -138,9 +143,6 @@ export const antiClockwiseOffsets = {
     [RobotDirection.E]: [0, 0],
   },
 };
-
-// Image Recognition
-const MAX_DISTANCE_FROM_IMAGE_CM = 20;
 
 // Grid Animation
 export const GRID_ANIMATION_SPEED = 100; // in milli-seconds

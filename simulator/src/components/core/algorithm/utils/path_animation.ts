@@ -6,7 +6,7 @@ import {
   antiClockwiseOffsets,
   clockwiseOffsets,
 } from "../../../../constants";
-import { AlgoOutputPaths } from "../../../../schemas/algo_output";
+import { AlgoOutput, AlgoOutputPaths } from "../../../../schemas/algo_output";
 import {
   Position,
   RobotActionEnum,
@@ -14,11 +14,29 @@ import {
   TurnDirection,
 } from "../../../../schemas/robot";
 import {
+  convertPositiveThetaToPostiveNegativeScale,
   convertThetaRotationToFinalDirection,
   convertThetaToDirection,
 } from "./conversions";
 
-/** Converts algorithm's output paths into step-wise Robot's `Positions` */
+/** Converts algorithm's output positions into step-wise Robot's Positions */
+export const convertAlgoOutputToStepwisePosition = (
+  positions: AlgoOutput["positions"]
+) => {
+  return positions.map((position) => {
+    // Handle Scan configuration
+    if (position.x === -1 && position.y === -1) return position;
+
+    const parsedPosition: Position = {
+      x: Math.floor(position.x / GRID_BLOCK_SIZE_CM),
+      y: Math.floor(position.y / GRID_BLOCK_SIZE_CM),
+      theta: convertPositiveThetaToPostiveNegativeScale(position.theta),
+    };
+    return parsedPosition;
+  });
+};
+
+/** @deprecated Converts algorithm's output paths into step-wise Robot's `Positions` */
 export const convertPathToStepwisePosition = (
   paths: AlgoOutputPaths["paths"]
 ) => {

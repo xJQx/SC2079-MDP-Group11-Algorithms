@@ -1,5 +1,17 @@
 import { RobotDirection, TurnDirection } from "../../../../schemas/robot";
 
+/** Converts a Robot's theta (rotation angle) from positive 2 PI range to [-PI, PI] range */
+export const convertPositiveThetaToPostiveNegativeScale = (theta: number) => {
+  // (0, -PI)
+  if (theta > Math.PI) {
+    theta = theta - Math.PI;
+    theta = Math.PI - theta;
+    theta = -theta;
+  }
+
+  return theta;
+};
+
 /** Converts a Robot's theta (rotation angle) to a simplified RobotDirection consisting of N, S, E, W */
 export const convertThetaToDirection = (theta: number) => {
   // -0.785 to 0.785 -> East

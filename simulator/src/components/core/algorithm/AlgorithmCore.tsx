@@ -3,11 +3,19 @@ import { NavigationGrid } from "./NavigationGrid";
 import { CoreContainter } from "../CoreContainter";
 import { Position } from "../../../schemas/robot";
 import {
+  ALGO_GRID_BLOCK_SIZE_MULTIPLIER,
   GRID_ANIMATION_SPEED,
   ROBOT_INITIAL_POSITION,
 } from "../../../constants";
-import { FaChevronLeft, FaChevronRight, FaPause, FaPlay } from "react-icons/fa";
-import { convertPathToStepwisePosition } from "./utils/path_animation";
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaPause,
+  FaPlay,
+  FaSitemap,
+  FaSpinner,
+} from "react-icons/fa";
+import { convertAlgoOutputToStepwisePosition } from "./utils/path_animation";
 import {
   AlgoTestDataInterface,
   AlgoTestEnum,
@@ -17,8 +25,13 @@ import { Button } from "../../common";
 import toast from "react-hot-toast";
 import { TestSelector } from "./TestSelector";
 import { ServerStatus } from "./ServerStatus";
+import useFetch from "../../../hooks/useFetch";
+import { AlgoInput } from "../../../schemas/algo_input";
+import { AlgoOutput } from "../../../schemas/algo_output";
 
 export const AlgorithmCore = () => {
+  const fetch = useFetch();
+
   // Robot's Positions
   const [robotPositions, setRobotPositions] = useState<Position[]>();
   const totalSteps = robotPositions?.length ?? 0;
@@ -36,16 +49,51 @@ export const AlgorithmCore = () => {
     const selectedTest = AlgoTestEnumMapper[selectedTestEnum];
     setSelectedTest(selectedTest);
 
-    if (selectedTest.paths) {
-      setRobotPositions(convertPathToStepwisePosition(selectedTest.paths));
-    } else {
-      // TODO: Fetch Paths from Backend Algorithm
-      setRobotPositions([ROBOT_INITIAL_POSITION]);
-      setCurrentRobotPosition(ROBOT_INITIAL_POSITION);
-      toast.error("Server is offline");
-    }
     setCurrentStep(0);
+    setCurrentRobotPosition(ROBOT_INITIAL_POSITION);
+    setRobotPositions(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTestEnum]);
+
+  // Run Algorithm
+  const [isAlgorithmLoading, setIsAlgorithmLoading] = useState(false);
+
+  // Run Algorithm
+  const handleRunAlgorithm = async () => {
+    if (startAnimation === true || isAlgorithmLoading === true) return;
+    setIsAlgorithmLoading(true);
+
+    const algoInput: AlgoInput = {
+      cat: "obstacles",
+      value: {
+        mode: "simulator",
+        obstacles: selectedTest.obstacles.map((o) => {
+          return {
+            id: o.id,
+            x: o.x * ALGO_GRID_BLOCK_SIZE_MULTIPLIER,
+            y: o.y * ALGO_GRID_BLOCK_SIZE_MULTIPLIER,
+            d: o.d,
+          };
+        }),
+      },
+    };
+    try {
+      const algoOutput: AlgoOutput = await fetch.post(
+        "/algo/simulator",
+        algoInput
+      );
+      console.log(algoOutput);
+      console.log(convertAlgoOutputToStepwisePosition(algoOutput.positions));
+      setRobotPositions(
+        convertAlgoOutputToStepwisePosition(algoOutput.positions)
+      );
+      setCurrentStep(0);
+    } catch (e) {
+      toast.error("Failed to run algorithm. Server Error: " + e);
+    }
+
+    setIsAlgorithmLoading(false);
+  };
 
   // Animation
   const [isManualAnimation, setIsManualAnimation] = useState(false);
@@ -111,6 +159,18 @@ export const AlgorithmCore = () => {
         selectedTest={selectedTest}
         setSelectedTest={setSelectedTest}
       />
+
+      {/* Run Algo */}
+      <div className="mb-4 flex justify-center">
+        <Button onClick={handleRunAlgorithm}>
+          <span>Run Algorithm</span>
+          {isAlgorithmLoading ? (
+            <FaSpinner className="animate-spin" />
+          ) : (
+            <FaSitemap className="text-[18px]" />
+          )}
+        </Button>
+      </div>
 
       {/* Animation */}
       {robotPositions && (

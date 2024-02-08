@@ -13,3 +13,10 @@ export interface Obstacle {
   y: number; // grid format
   d: ObstacleDirection; // obstacle face direction
 }
+
+export const ObstacleDirectionStringMapping = {
+  [ObstacleDirection.N]: "North",
+  [ObstacleDirection.S]: "South",
+  [ObstacleDirection.E]: "East",
+  [ObstacleDirection.W]: "West",
+};

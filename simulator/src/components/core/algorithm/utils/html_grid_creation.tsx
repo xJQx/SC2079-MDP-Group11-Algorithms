@@ -1,4 +1,9 @@
-import { GRID_TOTAL_HEIGHT, GRID_TOTAL_WIDTH } from "../../../../constants";
+import {
+  GRID_TOTAL_HEIGHT,
+  GRID_TOTAL_WIDTH,
+  ROBOT_GRID_HEIGHT,
+  ROBOT_GRID_WIDTH,
+} from "../../../../constants";
 import { Obstacle, ObstacleDirection } from "../../../../schemas/obstacle";
 import { Position, RobotDirection } from "../../../../schemas/robot";
 import { convertThetaToDirection } from "./conversions";
@@ -21,9 +26,9 @@ export const createHTMLGrid = (
       // Cell Contains Robot.
       if (
         robotPosition.x <= x &&
-        x <= robotPosition.x + 2 &&
+        x <= robotPosition.x + (ROBOT_GRID_WIDTH - 1) &&
         robotPosition.y <= y &&
-        y <= robotPosition.y + 2
+        y <= robotPosition.y + (ROBOT_GRID_HEIGHT - 1)
       )
         currentRow.push(
           createHTMLGridCellRobot(
