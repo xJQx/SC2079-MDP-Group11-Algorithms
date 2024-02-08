@@ -29,7 +29,6 @@ pip install -r requirements.txt
 3. In the same directory (`/algorithms-python`), start the application.
 
 ```bash
-cd app
 uvicorn main:app --reload
 ```
 
@@ -38,9 +37,8 @@ And you are ready to start using the Algorithm Server! The server application is
 **Script for quick startup:**
 
 ```bash
-cd backend
+cd algorithms-python
 . .venv/Scripts/activate
-cd app
 uvicorn main:app --reload
 ```
 
