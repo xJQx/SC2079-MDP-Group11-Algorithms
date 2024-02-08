@@ -79,7 +79,10 @@ def main(algo_input: AlgoInput):
     for path in paths:
       for node in path:
         simulator_algo_output.append(node.pos)
-      simulator_algo_output.append(Position(-1, -1, -1)) # Position configuration to represent scanning (*only for simulator)
+      
+      # Position configuration to represent scanning (*only for simulator)
+      simulator_algo_output.append(Position(-1, -1, -2)) 
+      simulator_algo_output.append(Position(-1, -1, -1)) 
 
     return simulator_algo_output
   
@@ -110,8 +113,22 @@ def _extract_obstacles_from_input(input_obstacles):
 """ ------ FastAPI (API Endpoints) ------- """
 """ -------------------------------------- """
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 async def root():
