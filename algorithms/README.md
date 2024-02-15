@@ -13,7 +13,7 @@
 
 # Setup Instructions
 
-1. In the `/algorithms-python` directory, create a python virtual environment and activate it.
+1. In the `/algorithms` directory, create a python virtual environment and activate it.
 
 ```bash
 python -m venv .venv
@@ -26,18 +26,20 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-3. In the same directory (`/algorithms-python`), start the application.
+1. In the same directory (`/algorithms`), start the application.
 
 ```bash
 uvicorn main:app --reload
 ```
 
-And you are ready to start using the Algorithm Server! The server application is running on http://127.0.0.1:8000/
+And you are ready to start using the Algorithm Server! The server application is running on http://127.0.0.1:8000/.
+
+To view the API Endpoint Docs, go to http://127.0.0.1:8000/docs.
 
 **Script for quick startup:**
 
 ```bash
-cd algorithms-python
+cd algorithms
 . .venv/Scripts/activate
 uvicorn main:app --reload
 ```
