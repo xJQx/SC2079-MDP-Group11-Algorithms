@@ -3,6 +3,7 @@ import logging
 import multiprocessing as mp
 import time
 from typing import List
+import math
 
 from arena.map import Map
 from common.types import Position
@@ -87,6 +88,12 @@ class SearchProcess(mp.Process):
     ) -> float:
         """Returns astar `f` cost"""
         logger.info(f'P{self.i} start search {st, end}')
+        # Return Euclidean Distance
+        start_pos = self.pos[st]
+        end_pos = self.pos[end]
+        euclidean_distance = math.sqrt((end_pos.x - start_pos.x) ** 2 + (end_pos.y - start_pos.y) ** 2)
+        return euclidean_distance
+
         path = self.astar.search(self.pos[st], self.pos[end])
         return path[-1].f if path else 99999
         
@@ -158,8 +165,10 @@ class ExhaustiveSearch:
             logger.info(f'{r} -> {c} ({f})')
             m -= 1
         logger.info(f'Adj list completed in {time.time()-st} s')
+        print(f'Adj list completed in {time.time()-st} s')
 
         # get shortest path, i.e., lowest cost among all permutations
+        st2 = time.time()
         h = []
         for i, perm in enumerate(perms):
             cost = sum([edges[perm[i]][perm[i+1]] for i in range(n-1)])
@@ -194,6 +203,8 @@ class ExhaustiveSearch:
                 loc_mn_path = path
                 min_perm = perm
             if f < 99999:
+                print(f'Time (pathfinding) {time.time()-st2} s')
                 return perm, path
         
+        print(f'Time (pathfinding) {time.time()-st2} s')
         return min_perm, loc_mn_path # AlgoOutput -> `min_perm`: lowest cost order of visiting all the obstacles starting from starting location; `loc_mn_path`: An array of a path Array of `Node` where each inner path Array is the path from one location to another

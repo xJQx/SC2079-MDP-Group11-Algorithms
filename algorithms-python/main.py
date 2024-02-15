@@ -35,7 +35,7 @@ class AlgoInputValue(BaseModel):
   mode: AlgoInputMode
 
 class AlgoInput(BaseModel):
-  cat: str = "obstacle"
+  cat: str = "obstacles"
   value: AlgoInputValue
 
 # Output
@@ -46,6 +46,13 @@ class AlgoOutputSimulatorPosition(BaseModel):
 
 class AlgoOutputSimulator(BaseModel):
   positions: list[AlgoOutputSimulatorPosition]
+
+class AlgoOutputLiveCommand(BaseModel):
+  cat: str = "control"
+  value: str
+
+class AlgoOutputLive(BaseModel):
+  commands: list[AlgoOutputLiveCommand]
 
 
 """ -------------------------------------- """
@@ -86,12 +93,20 @@ def main(algo_input: AlgoInput):
 
     return simulator_algo_output
   
-  # TODO: STM Commands for `live` mode
   if algo_mode == AlgoInputMode.LIVE:
     for path in paths:
       print("\t-----stm commands-----")
       stm_commands = convert_segments_to_commands(path)
       print(stm_commands)
+      
+      algoOutputLiveCommands: list[AlgoOutputLiveCommand] = [] # Array of commands
+      for command in stm_commands:
+        algoOutputLiveCommands.append(AlgoOutputLiveCommand(
+          cat="control",
+          value=command
+        ))
+
+      return algoOutputLiveCommands
 
 def _extract_obstacles_from_input(input_obstacles):
   """
@@ -159,4 +174,9 @@ async def algo_simulator(algo_input: AlgoInput):
 
   return { "positions": positions }
 
-# TODO: Create Endpoint for `live` mode
+@app.post("/algo/live", response_model=AlgoOutputLive, tags=["Algorithm"])
+async def algo_simulator(algo_input: AlgoInput):
+  """Main endpoint for live mode"""
+  commands = main(algo_input.model_dump())
+
+  return { "commands": commands }

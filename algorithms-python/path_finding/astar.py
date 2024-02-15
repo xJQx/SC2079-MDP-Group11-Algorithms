@@ -93,12 +93,12 @@ class AStar:
     ):
         # self.moves: (v, s, d, Movement, movement function); See `Node` __init__ for definitions of the respective variables
         self.moves = (
+            ( 1,  0, DIST_FW,    Movement.FWD,       fwd),
+            ( 1, -1, DIST_FL[2], Movement.FWD_LEFT,  fwd_left),
+            ( 1,  1, DIST_FR[2], Movement.FWD_RIGHT, fwd_right),
             (-1,  0, DIST_BW,    Movement.BWD,       bwd),
             (-1, -1, DIST_BL[2], Movement.BWD_LEFT,  bwd_left),
             (-1,  1, DIST_BR[2], Movement.BWD_RIGHT, bwd_right),
-            ( 1,  0, DIST_FW,    Movement.FWD,       fwd),
-            ( 1, -1, DIST_FL[2], Movement.FWD_LEFT,  fwd_left),
-            ( 1,  1, DIST_FR[2], Movement.FWD_RIGHT, fwd_right)
         )
         self.map = mp
         self.end = None
