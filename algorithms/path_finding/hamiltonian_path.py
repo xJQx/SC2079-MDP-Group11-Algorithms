@@ -4,6 +4,7 @@ import multiprocessing as mp
 import time
 from typing import List
 import math
+from enum import Enum
 
 from arena.map import Map
 from common.types import Position
@@ -62,6 +63,12 @@ def _permutate(n: int, start_from_zero: bool) -> List[List[int]]:
     return res
 
 
+class AlgoType(Enum):
+    """Enumeration for possible algorithms to be used for `HamiltonianSearch`"""
+    EXHAUSTIVE_ASTAR = "Exhaustive Astar"
+    EUCLIDEAN = "Euclidean"
+    BFS = "Breadth First Search"
+
 class SearchProcess(mp.Process):
     """A Process (similar to a Thread) used for multiprocessing to speed up algorithm computation time"""
     def __init__(
@@ -70,7 +77,8 @@ class SearchProcess(mp.Process):
         astar: AStar,
         todo: mp.Queue,
         done: mp.Queue,
-        i:int
+        i:int,
+        algo_type = AlgoType
     ):
         super().__init__()
         self.astar = astar
@@ -78,6 +86,7 @@ class SearchProcess(mp.Process):
         self.todo = todo
         self.done = done
         self.i = i
+        self.algo_type = algo_type
         logger.info(f'Spawning P{i}')
 
 
@@ -86,17 +95,30 @@ class SearchProcess(mp.Process):
         st: int,
         end: int
     ) -> float:
-        """Returns astar `f` cost"""
+        """Search According to the `AlgoType`
+        @returns:
+            Exhaustive Astar: Astar 'f' cost
+            Euclidean: Euclidean Distance
+            BST: BST cost ('g' cost)
+        """
         logger.info(f'P{self.i} start search {st, end}')
-        # Return Euclidean Distance
-        start_pos = self.pos[st]
-        end_pos = self.pos[end]
-        euclidean_distance = math.sqrt((end_pos.x - start_pos.x) ** 2 + (end_pos.y - start_pos.y) ** 2)
-        return euclidean_distance
 
-        path = self.astar.search(self.pos[st], self.pos[end])
-        return path[-1].f if path else 99999
-        
+        match (self.algo_type):
+            case AlgoType.EXHAUSTIVE_ASTAR:
+                # Returns astar 'f' cost
+                path = self.astar.search(self.pos[st], self.pos[end])
+                return path[-1].f if path else 99999
+            case AlgoType.EUCLIDEAN:
+                # Return Euclidean Distance
+                start_pos = self.pos[st]
+                end_pos = self.pos[end]
+                euclidean_distance = math.sqrt((end_pos.x - start_pos.x) ** 2 + (end_pos.y - start_pos.y) ** 2)
+                return euclidean_distance
+            case AlgoType.BFS:
+                # TODO: BFS
+                raise NotImplementedError()
+            case _:
+                raise Exception("Invalid AlgoType")
     
     def run(self):
         while 1:
@@ -107,10 +129,9 @@ class SearchProcess(mp.Process):
                 logger.info(f'P{self.i} finished')
                 return
 
-
-class ExhaustiveSearch:
+class HamiltonianSearch:
     """
-    Uses `Astar` to do an exhaustive search on all possible permutations of order of obstacles to visit 
+    Uses `Astar` (If AlgoType.EXHAUSIVE_ASTAR) to do an exhaustive search on all possible permutations of order of obstacles to visit 
     and finds the lowest cost permutation and its associated paths.
 
     Uses Multiprocessing (parameter `n` which defaults to 8) to lower computation time.
@@ -132,12 +153,18 @@ class ExhaustiveSearch:
         self,
         map: "Map", 
         src: "Position",
+        algo_type: AlgoType,
         n: int = 8
     ):
         self.astar = AStar(map)
         self.src = src
         self.pos = [src] + [o.to_pos() for o in map.obstacles]
         self.n = n
+        self.algo_type = algo_type
+
+        # TODO: BFS
+        if algo_type == AlgoType.BFS:
+            raise NotImplementedError()
 
     
     def search(self, top_n: int = 3):
@@ -155,7 +182,7 @@ class ExhaustiveSearch:
                     todo.put((r, c)) 
 
         for i in range(self.n):
-            p = SearchProcess(self.pos, self.astar, todo, done, i)
+            p = SearchProcess(self.pos, self.astar, todo, done, i, self.algo_type)
             p.daemon = True
             p.start()
 
@@ -204,7 +231,9 @@ class ExhaustiveSearch:
                 min_perm = perm
             if f < 99999:
                 print(f'Time (pathfinding) {time.time()-st2} s')
+                print(f'Total runtime {time.time()-st} s')
                 return perm, path
         
         print(f'Time (pathfinding) {time.time()-st2} s')
+        print(f'Total runtime {time.time()-st} s')
         return min_perm, loc_mn_path # AlgoOutput -> `min_perm`: lowest cost order of visiting all the obstacles starting from starting location; `loc_mn_path`: An array of a path Array of `Node` where each inner path Array is the path from one location to another

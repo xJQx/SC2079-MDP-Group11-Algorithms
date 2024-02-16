@@ -7,11 +7,12 @@ from common.utils import _mappings as Int_to_Direction_mappings
 
 from math import pi
 
-from path_finding.hamiltonian_path import ExhaustiveSearch
+from path_finding.hamiltonian_path import HamiltonianSearch, AlgoType
 
 from robot.stm_commands import convert_segments_to_commands
 
 import multiprocessing as mp
+import time
 
 """ -------------------------------------- """
 """ ---------- Endpoint Schemas ---------- """
@@ -37,6 +38,7 @@ class AlgoInputValue(BaseModel):
 class AlgoInput(BaseModel):
   cat: str = "obstacles"
   value: AlgoInputValue
+  algo_type: AlgoType
 
 # Output
 class AlgoOutputSimulatorPosition(BaseModel):
@@ -46,6 +48,7 @@ class AlgoOutputSimulatorPosition(BaseModel):
 
 class AlgoOutputSimulator(BaseModel):
   positions: list[AlgoOutputSimulatorPosition]
+  runtime: str
 
 class AlgoOutputLiveCommand(BaseModel):
   cat: str = "control"
@@ -75,7 +78,9 @@ def main(algo_input: AlgoInput):
   map = Map(obstacles=obstacles)
 
   # Algorithm
-  algo = ExhaustiveSearch(map=map, src=start_position)
+  algo_type = algo_input["algo_type"]
+  print("Algorithm: ", algo_type)
+  algo = HamiltonianSearch(map=map, src=start_position, algo_type=algo_type)
 
   # Algorithm Search⭐
   min_perm, paths = algo.search()
@@ -170,12 +175,15 @@ async def algo_simulator_test():
 @app.post("/algo/simulator", response_model=AlgoOutputSimulator, tags=["Algorithm"])
 async def algo_simulator(algo_input: AlgoInput):
   """Main endpoint for simulator"""
+  start_time = time.time()
   positions = main(algo_input.model_dump())
 
-  return { "positions": positions }
+  runtime = time.time() - start_time # in seconds
+
+  return { "positions": positions, "runtime": "{:.4f} seconds".format(runtime) }
 
 @app.post("/algo/live", response_model=AlgoOutputLive, tags=["Algorithm"])
-async def algo_simulator(algo_input: AlgoInput):
+async def algo_live(algo_input: AlgoInput):
   """Main endpoint for live mode"""
   commands = main(algo_input.model_dump())
 
