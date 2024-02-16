@@ -12,6 +12,7 @@ export interface AlgoOutput {
     y: number; // in cm (5cm increment)
     theta: number; // in radian (positive from 0 to 2 PI; in NSEW direction)
   }[];
+  runtime: string; // in seconds
 }
 
 /** @deprecated Paths that the robot should take in the navigational area according to the algorithm used */

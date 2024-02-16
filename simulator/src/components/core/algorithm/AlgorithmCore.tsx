@@ -26,8 +26,9 @@ import toast from "react-hot-toast";
 import { TestSelector } from "./TestSelector";
 import { ServerStatus } from "./ServerStatus";
 import useFetch from "../../../hooks/useFetch";
-import { AlgoInput } from "../../../schemas/algo_input";
+import { AlgoInput, AlgoType } from "../../../schemas/algo_input";
 import { AlgoOutput } from "../../../schemas/algo_output";
+import { AlgorithmSelector } from "./AlgorithmSelector";
 
 export const AlgorithmCore = () => {
   const fetch = useFetch();
@@ -35,6 +36,14 @@ export const AlgorithmCore = () => {
   // Robot's Positions
   const [robotPositions, setRobotPositions] = useState<Position[]>();
   const totalSteps = robotPositions?.length ?? 0;
+
+  // Select Algorithm
+  const [selectedAlgoTypeEnum, setSelectedAlgoTypeEnum] = useState<AlgoType>(
+    AlgoType.EXHAUSTIVE_ASTAR
+  );
+
+  // Algorithm Runtime
+  const [algoRuntime, setAlgoRuntime] = useState<string>("");
 
   // Select Tests
   const [selectedTestEnum, setSelectedTestEnum] = useState<AlgoTestEnum>(
@@ -62,6 +71,7 @@ export const AlgorithmCore = () => {
   const handleRunAlgorithm = async () => {
     if (startAnimation === true || isAlgorithmLoading === true) return;
     setIsAlgorithmLoading(true);
+    setAlgoRuntime("");
 
     const algoInput: AlgoInput = {
       cat: "obstacles",
@@ -76,6 +86,7 @@ export const AlgorithmCore = () => {
           };
         }),
       },
+      algo_type: selectedAlgoTypeEnum,
     };
     try {
       const algoOutput: AlgoOutput = await fetch.post(
@@ -88,6 +99,9 @@ export const AlgorithmCore = () => {
         convertAlgoOutputToStepwisePosition(algoOutput.positions)
       );
       setCurrentStep(0);
+
+      setAlgoRuntime(algoOutput.runtime);
+      toast.success("Algorithm ran successfully.");
     } catch (e) {
       toast.error("Failed to run algorithm. Server Error: " + e);
     }
@@ -160,6 +174,12 @@ export const AlgorithmCore = () => {
         setSelectedTest={setSelectedTest}
       />
 
+      {/* Select ALgorithm */}
+      <AlgorithmSelector
+        selectedAlgoTypeEnum={selectedAlgoTypeEnum}
+        setSelectedAlgoTypeEnum={setSelectedAlgoTypeEnum}
+      />
+
       {/* Run Algo */}
       <div className="mb-4 flex justify-center">
         <Button onClick={handleRunAlgorithm}>
@@ -171,6 +191,15 @@ export const AlgorithmCore = () => {
           )}
         </Button>
       </div>
+
+      {/* Algo Runtime */}
+      {algoRuntime && (
+        <div className="mb-4 flex justify-center">
+          Algorithm Runtime:&nbsp;
+          <span className="font-bold">{algoRuntime}</span>&nbsp;(
+          {selectedAlgoTypeEnum})
+        </div>
+      )}
 
       {/* Animation */}
       {robotPositions && (
