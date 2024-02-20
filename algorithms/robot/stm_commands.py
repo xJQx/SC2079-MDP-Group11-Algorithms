@@ -85,23 +85,58 @@ def convert_segments_to_commands(
     
     result = []
 
+    # for segment in segments:
+    #     if segment.v == 1:
+    #         if segment.s == -1:
+    #             result.append("FL"+"{:06.2f}".format((segment.d / (2*DIST_FL[2])) * 180))
+    #         elif segment.s == 0:
+    #             result.append("FW"+ "{:06.2f}".format(segment.d))
+    #         elif segment.s == 1:
+    #             result.append("FR"+"{:06.2f}".format((segment.d / (2*DIST_FR[2])) * 180))
+    #     elif segment.v == -1:
+    #         if segment.s == -1:
+    #             result.append("BL"+"{:06.2f}".format((segment.d / (2*DIST_BL[2])) * 180))
+    #         elif segment.s == 0:
+    #             result.append("BW"+ "{:06.2f}".format(segment.d))
+    #         elif segment.s == 1:
+    #             result.append("BR"+"{:06.2f}".format((segment.d / (2*DIST_BR[2])) * 180))
     for segment in segments:
         if segment.v == 1:
             if segment.s == -1:
-                result.append("FL"+"{:06.2f}".format((segment.d / (2*DIST_FL[2])) * 180))
+                result.append("left,82,forward,0")
             elif segment.s == 0:
-                result.append("FW"+ "{:06.2f}".format(segment.d))
+                result.append("center,0,forward," + str(int(segment.d)))
             elif segment.s == 1:
-                result.append("FR"+"{:06.2f}".format((segment.d / (2*DIST_FR[2])) * 180))
+                result.append("right,100,forward,0")
         elif segment.v == -1:
             if segment.s == -1:
-                result.append("BL"+"{:06.2f}".format((segment.d / (2*DIST_BL[2])) * 180))
+                result.append("left,72,reverse,0")
             elif segment.s == 0:
-                result.append("BW"+ "{:06.2f}".format(segment.d))
+                result.append("center,0,reverse,"+ str(int(segment.d)))
             elif segment.s == 1:
-                result.append("BR"+"{:06.2f}".format((segment.d / (2*DIST_BR[2])) * 180))
+                result.append("right,105,reverse,0")
 
-    return result
+    resultcombined = []
+    n = 0
+    for i in range(len(result)):
+        string = result[i].split(',')
+        if i == 0:
+            resultcombined.append(result[i])
+            n = 0
+        elif string[0] != "center":
+            resultcombined.append(result[i])
+            n += 1
+        else:
+            prevstr = resultcombined[n].split(',')
+            if string[0] == prevstr[0] and string[2] == prevstr[2]:
+                new = string[0]+','+string[1]+','+string[2]+','+str(int(string[3])+int(prevstr[3]))
+                resultcombined[n] = new
+            else:
+                resultcombined.append(result[i])
+                n += 1
+
+
+    return resultcombined
 
 
 def merge_cmds(cmds: List[List[str]]) -> str:
