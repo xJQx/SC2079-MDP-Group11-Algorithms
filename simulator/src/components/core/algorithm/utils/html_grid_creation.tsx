@@ -24,12 +24,7 @@ export const createHTMLGrid = (
 
     for (let x = 0; x < GRID_TOTAL_WIDTH; x++) {
       // Cell Contains Robot.
-      if (
-        robotPosition.x <= x &&
-        x <= robotPosition.x + (ROBOT_GRID_WIDTH - 1) &&
-        robotPosition.y <= y &&
-        y <= robotPosition.y + (ROBOT_GRID_HEIGHT - 1)
-      )
+      if (isRobotCell(robotPosition, x, y))
         currentRow.push(
           createHTMLGridCellRobot(
             x,
@@ -152,10 +147,11 @@ export const addHTMLGridLables = (grid: React.ReactNode[][]) => {
 
 // ---------- Helper Functions - Calculations ---------- //
 /**
+ * @deprecated Fixed Bottom Left (x, y) area occupied by Robot as Robot's current position regardless of Robot's facing.
  * Converts a Robot's Theta rotation to the associated Camera Offset on the grid
  * @returns (x, y) offset of the robot's camera from the bottom left corner of the robot
  */
-export const convertRobotThetaToCameraOffsetBlock = (theta: number) => {
+export const _convertRobotThetaToCameraOffsetBlock = (theta: number) => {
   const robotDirection = convertThetaToDirection(theta);
   // East
   if (robotDirection === RobotDirection.E) {
@@ -174,4 +170,93 @@ export const convertRobotThetaToCameraOffsetBlock = (theta: number) => {
     return [1, 0];
   }
   return [0, 0];
+};
+
+/**
+ * Used Bottom Left of Robot's Body as Robot's current (x, y) position.
+ * Converts a Robot's Theta rotation to the associated Camera Offset on the grid
+ * @returns (x, y) offset of the robot's camera from the bottom left corner of the robot
+ */
+export const convertRobotThetaToCameraOffsetBlock = (theta: number) => {
+  const robotDirection = convertThetaToDirection(theta);
+  // East
+  if (robotDirection === RobotDirection.E) {
+    return [2, -1];
+  }
+  // North
+  else if (robotDirection === RobotDirection.N) {
+    return [1, 2];
+  }
+  // West
+  else if (robotDirection === RobotDirection.W) {
+    return [-2, 1];
+  }
+  // South
+  else if (robotDirection === RobotDirection.S) {
+    return [-1, -2];
+  }
+  return [0, 0];
+};
+
+/**
+ * Checks if current cell is occupied by a Robot based on it's (x, y) position and facing.
+ * @location
+ */
+export const isRobotCell = (
+  robotPosition: Position,
+  cell_x: number,
+  cell_y: number
+) => {
+  const robotDirection: RobotDirection = convertThetaToDirection(
+    robotPosition.theta
+  );
+
+  switch (robotDirection) {
+    case RobotDirection.N:
+      if (
+        robotPosition.x <= cell_x &&
+        cell_x <= robotPosition.x + (ROBOT_GRID_WIDTH - 1) &&
+        robotPosition.y <= cell_y &&
+        cell_y <= robotPosition.y + (ROBOT_GRID_HEIGHT - 1)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    case RobotDirection.S:
+      if (
+        robotPosition.x - (ROBOT_GRID_WIDTH - 1) <= cell_x &&
+        cell_x <= robotPosition.x &&
+        robotPosition.y - (ROBOT_GRID_HEIGHT - 1) <= cell_y &&
+        cell_y <= robotPosition.y
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    case RobotDirection.E:
+      if (
+        robotPosition.x <= cell_x &&
+        cell_x <= robotPosition.x + (ROBOT_GRID_WIDTH - 1) &&
+        robotPosition.y - (ROBOT_GRID_HEIGHT - 1) <= cell_y &&
+        cell_y <= robotPosition.y
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    case RobotDirection.W:
+      if (
+        robotPosition.x - (ROBOT_GRID_WIDTH - 1) <= cell_x &&
+        cell_x <= robotPosition.x &&
+        robotPosition.y <= cell_y &&
+        cell_y <= robotPosition.y + (ROBOT_GRID_HEIGHT - 1)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    default:
+      return false;
+  }
 };
