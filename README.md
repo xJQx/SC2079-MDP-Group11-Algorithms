@@ -12,7 +12,9 @@
     - [Where to start?](#where-to-start)
     - [Connection Protocol - FastAPI (HTTPS)](#connection-protocol---fastapi-https)
       - [Input Schema](#input-schema)
-      - [Output Schema](#output-schema)
+    - [Output Schema](#output-schema)
+      - [Simulator Mode Output Schema](#simulator-mode-output-schema)
+      - [Live Mode Output Schema](#live-mode-output-schema)
 
 # Algorithm Simulator (Web)
 
@@ -114,10 +116,33 @@ This Algorithm Repo uses FASTAPI and HTTPS + JSON protocol to transmit infomatio
     }[],
     mode: "simulator" | "live",
   },
+  algo_type: "Exhaustive Astar" | "Euclidean" | "Breadth First Search"
 }
 ```
 
-#### Output Schema
+**Example:**
+
+```json
+{
+  "cat": "obstacles",
+  "value": {
+    "obstacles": [
+      {
+        "id": 1,
+        "x": 8,
+        "y": 12,
+        "d": 2
+      }
+    ],
+    "mode": "live"
+  },
+  "algo_type": "Exhaustive Astar"
+}
+```
+
+### Output Schema
+
+#### Simulator Mode Output Schema
 
 ```javascript
 {
@@ -125,6 +150,17 @@ This Algorithm Repo uses FASTAPI and HTTPS + JSON protocol to transmit infomatio
     x: int,         // in cm
     y: int,         // in cm
     theta: float    // in radian
-  }
+  }[]
+}
+```
+
+#### Live Mode Output Schema
+
+```javascript
+{
+  commands: {
+    cat: "control",
+    value: string,
+  }[]
 }
 ```
