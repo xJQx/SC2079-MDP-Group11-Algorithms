@@ -82,9 +82,9 @@ def can_merge_nodes(
 def convert_segments_to_commands(
     segments: List["Node"]
 ) -> List[str]:
-    
     result = []
 
+    # Old Version
     # for segment in segments:
     #     if segment.v == 1:
     #         if segment.s == -1:
@@ -100,6 +100,8 @@ def convert_segments_to_commands(
     #             result.append("BW"+ "{:06.2f}".format(segment.d))
     #         elif segment.s == 1:
     #             result.append("BR"+"{:06.2f}".format((segment.d / (2*DIST_BR[2])) * 180))
+
+    # New
     for segment in segments:
         if segment.v == 1:
             if segment.s == -1:
@@ -116,27 +118,27 @@ def convert_segments_to_commands(
             elif segment.s == 1:
                 result.append("right,105,reverse,0")
 
-    resultcombined = []
+    # Combine similar commands together to reduce the number of commands (to improve Robot Execution time)
+    resultCombined = []
     n = 0
     for i in range(len(result)):
         string = result[i].split(',')
         if i == 0:
-            resultcombined.append(result[i])
+            resultCombined.append(result[i])
             n = 0
         elif string[0] != "center":
-            resultcombined.append(result[i])
+            resultCombined.append(result[i])
             n += 1
         else:
-            prevstr = resultcombined[n].split(',')
+            prevstr = resultCombined[n].split(',')
             if string[0] == prevstr[0] and string[2] == prevstr[2]:
                 new = string[0]+','+string[1]+','+string[2]+','+str(int(string[3])+int(prevstr[3]))
-                resultcombined[n] = new
+                resultCombined[n] = new
             else:
-                resultcombined.append(result[i])
+                resultCombined.append(result[i])
                 n += 1
 
-
-    return resultcombined
+    return resultCombined
 
 
 def merge_cmds(cmds: List[List[str]]) -> str:
