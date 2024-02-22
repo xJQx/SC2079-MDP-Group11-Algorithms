@@ -99,19 +99,19 @@ def main(algo_input: AlgoInput):
     return simulator_algo_output
   
   if algo_mode == AlgoInputMode.LIVE:
-    for path in paths:
-      print("\t-----stm commands-----")
-      stm_commands = convert_segments_to_commands(path)
-      print(stm_commands)
-      
-      algoOutputLiveCommands: list[AlgoOutputLiveCommand] = [] # Array of commands
-      for command in stm_commands:
-        algoOutputLiveCommands.append(AlgoOutputLiveCommand(
-          cat="control",
-          value=command
-        ))
+    stm_commands = []
 
-      return algoOutputLiveCommands
+    for path in paths:
+      stm_commands.extend(convert_segments_to_commands(path))
+    
+    algoOutputLiveCommands: list[AlgoOutputLiveCommand] = [] # Array of commands
+    for command in stm_commands:
+      algoOutputLiveCommands.append(AlgoOutputLiveCommand(
+        cat="control",
+        value=command
+      ))
+
+    return algoOutputLiveCommands
 
 def _extract_obstacles_from_input(input_obstacles):
   """
