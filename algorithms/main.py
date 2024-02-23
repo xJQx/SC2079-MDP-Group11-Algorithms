@@ -52,7 +52,7 @@ class AlgoOutputSimulator(BaseModel):
   positions: list[AlgoOutputSimulatorPosition]
   runtime: str
 
-class AlgoOutputSimulatorPosition(BaseModel):
+class AlgoOutputLivePosition(BaseModel):
   x: int # in cm
   y: int # in cm
   d: int # Robot Face -> 1: North; 2: South; 3: East; 4: West
@@ -60,7 +60,7 @@ class AlgoOutputSimulatorPosition(BaseModel):
 class AlgoOutputLiveCommand(BaseModel):
   cat: str = "control"
   value: str
-  end_position: AlgoOutputSimulatorPosition
+  end_position: AlgoOutputLivePosition
 
 class AlgoOutputLive(BaseModel):
   commands: list[AlgoOutputLiveCommand]
