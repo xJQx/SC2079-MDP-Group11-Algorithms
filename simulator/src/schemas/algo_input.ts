@@ -16,7 +16,8 @@ export interface AlgoInput {
   cat: "obstacles";
   value: {
     obstacles: Obstacle[];
-    mode: "simulator";
+    mode: 0; // 0: Task 1
   };
+  server_mode: "simulator";
   algo_type: AlgoType;
 }

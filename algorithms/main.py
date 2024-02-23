@@ -19,6 +19,7 @@ import time
 """ -------------------------------------- """
 from pydantic import BaseModel
 from enum import Enum
+from typing import Optional
 
 # Input
 class AlgoInputMode(Enum):
@@ -33,27 +34,33 @@ class AlgoInputValueObstacle(BaseModel):
 
 class AlgoInputValue(BaseModel):
   obstacles: list[AlgoInputValueObstacle]
-  mode: AlgoInputMode
+  mode: int # (0: Task 1); (1: Task 2)
 
 class AlgoInput(BaseModel):
   cat: str = "obstacles"
   value: AlgoInputValue
-  algo_type: AlgoType
+  server_mode: Optional[AlgoInputMode] = AlgoInputMode.LIVE
+  algo_type: Optional[AlgoType] = AlgoType.EXHAUSTIVE_ASTAR
 
 # Output
-class AlgoOutputPosition(BaseModel):
+class AlgoOutputSimulatorPosition(BaseModel):
   x: int # in cm
   y: int # in cm
   theta: float # in radian
 
 class AlgoOutputSimulator(BaseModel):
-  positions: list[AlgoOutputPosition]
+  positions: list[AlgoOutputSimulatorPosition]
   runtime: str
+
+class AlgoOutputSimulatorPosition(BaseModel):
+  x: int # in cm
+  y: int # in cm
+  d: int # Robot Face -> 1: North; 2: South; 3: East; 4: West
 
 class AlgoOutputLiveCommand(BaseModel):
   cat: str = "control"
   value: str
-  end_position: AlgoOutputPosition
+  end_position: AlgoOutputSimulatorPosition
 
 class AlgoOutputLive(BaseModel):
   commands: list[AlgoOutputLiveCommand]
@@ -66,8 +73,11 @@ if __name__ == '__main__':
   mp.freeze_support() # Needed to run child processes (multiprocessing)
 
 def main(algo_input: AlgoInput):
-  # Algorithm Mode -> 'simulator' or 'live'
-  algo_mode = algo_input["value"]["mode"]
+  # Algorithm Server Mode -> 'simulator' or 'live'
+  algo_server_mode = algo_input["server_mode"]
+
+  # Algorithm Task Mode -> 0: Task 1; 1: Task 2
+  algo_task_mode = algo_input["value"]["mode"]
 
   # Obstacles
   obstacles = _extract_obstacles_from_input(algo_input["value"]["obstacles"])
@@ -87,7 +97,7 @@ def main(algo_input: AlgoInput):
   min_perm, paths = algo.search()
 
   # Results
-  if algo_mode == AlgoInputMode.SIMULATOR:
+  if algo_server_mode == AlgoInputMode.SIMULATOR:
     simulator_algo_output = [] # Array of positions
     for path in paths:
       for node in path:
@@ -99,7 +109,7 @@ def main(algo_input: AlgoInput):
 
     return simulator_algo_output
   
-  if algo_mode == AlgoInputMode.LIVE:
+  if algo_server_mode == AlgoInputMode.LIVE:
     stm_commands = []
 
     for path in paths:

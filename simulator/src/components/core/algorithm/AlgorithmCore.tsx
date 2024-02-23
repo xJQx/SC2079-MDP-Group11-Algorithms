@@ -76,7 +76,7 @@ export const AlgorithmCore = () => {
     const algoInput: AlgoInput = {
       cat: "obstacles",
       value: {
-        mode: "simulator",
+        mode: 0,
         obstacles: selectedTest.obstacles.map((o) => {
           return {
             id: o.id,
@@ -86,6 +86,7 @@ export const AlgorithmCore = () => {
           };
         }),
       },
+      server_mode: "simulator",
       algo_type: selectedAlgoTypeEnum,
     };
     try {

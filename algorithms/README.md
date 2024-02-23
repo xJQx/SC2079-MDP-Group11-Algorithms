@@ -91,9 +91,10 @@ This Algorithm Repo uses FASTAPI and HTTPS + JSON protocol to transmit infomatio
       y: int,         // in grid format
       d: int,         // direction of obstacle; 1: North; 2: South; 3: East; 4: West
     }[],
-    mode: "simulator" | "live",
+    mode: 0 | 1,      // 0: Task 1; 1: Task 2
   },
-  algo_type: "Exhaustive Astar" | "Euclidean" | "Breadth First Search"
+  server_mode: "simulator" | "live" | null,                                     // Optional
+  algo_type: "Exhaustive Astar" | "Euclidean" | "Breadth First Search" | null   // Optional
 }
 ```
 
@@ -111,8 +112,9 @@ This Algorithm Repo uses FASTAPI and HTTPS + JSON protocol to transmit infomatio
         "d": 2
       }
     ],
-    "mode": "live"
+    "mode": 0
   },
+  "server_mode": "live",
   "algo_type": "Exhaustive Astar"
 }
 ```
