@@ -2,14 +2,24 @@ import React, { useState } from "react";
 import { Button, ModalContainer } from "../../common";
 import { FaCheckSquare, FaSitemap, FaSquare } from "react-icons/fa";
 import { AlgoType, AlgoTypeList } from "../../../schemas/algo_input";
+import { Position } from "../../../schemas/robot";
 
 interface AlgorithmSelectorProps {
   selectedAlgoTypeEnum: AlgoType;
   setSelectedAlgoTypeEnum: React.Dispatch<React.SetStateAction<AlgoType>>;
+  setAlgoRuntime: React.Dispatch<string>;
+  setRobotPositions: React.Dispatch<
+    React.SetStateAction<Position[] | undefined>
+  >;
 }
 
 export const AlgorithmSelector = (props: AlgorithmSelectorProps) => {
-  const { selectedAlgoTypeEnum, setSelectedAlgoTypeEnum } = props;
+  const {
+    selectedAlgoTypeEnum,
+    setSelectedAlgoTypeEnum,
+    setAlgoRuntime,
+    setRobotPositions,
+  } = props;
 
   const [isAlgorithmSelectorModalOpen, setIsAlgorithmSelectorModalOpen] =
     useState(false);
@@ -38,6 +48,8 @@ export const AlgorithmSelector = (props: AlgorithmSelectorProps) => {
                 setIsAlgorithmSelectorModalOpen={
                   setIsAlgorithmSelectorModalOpen
                 }
+                setAlgoRuntime={setAlgoRuntime}
+                setRobotPositions={setRobotPositions}
               />
             ))}
           </div>
@@ -54,6 +66,10 @@ interface AlgorithmSelectorItemProps {
   setIsAlgorithmSelectorModalOpen: React.Dispatch<
     React.SetStateAction<boolean>
   >;
+  setAlgoRuntime: React.Dispatch<string>;
+  setRobotPositions: React.Dispatch<
+    React.SetStateAction<Position[] | undefined>
+  >;
 }
 
 const AlgorithmSelectorItem = (props: AlgorithmSelectorItemProps) => {
@@ -62,6 +78,8 @@ const AlgorithmSelectorItem = (props: AlgorithmSelectorItemProps) => {
     isSelected = false,
     setSelectedAlgoTypeEnum,
     setIsAlgorithmSelectorModalOpen,
+    setAlgoRuntime,
+    setRobotPositions,
   } = props;
 
   return (
@@ -70,6 +88,8 @@ const AlgorithmSelectorItem = (props: AlgorithmSelectorItemProps) => {
       onClick={() => {
         setSelectedAlgoTypeEnum(test);
         setIsAlgorithmSelectorModalOpen(false);
+        setAlgoRuntime("");
+        setRobotPositions(undefined);
       }}
     >
       {isSelected ? (

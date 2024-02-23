@@ -172,12 +172,15 @@ export const AlgorithmCore = () => {
         setSelectedTestEnum={setSelectedTestEnum}
         selectedTest={selectedTest}
         setSelectedTest={setSelectedTest}
+        setAlgoRuntime={setAlgoRuntime}
       />
 
       {/* Select ALgorithm */}
       <AlgorithmSelector
         selectedAlgoTypeEnum={selectedAlgoTypeEnum}
         setSelectedAlgoTypeEnum={setSelectedAlgoTypeEnum}
+        setAlgoRuntime={setAlgoRuntime}
+        setRobotPositions={setRobotPositions}
       />
 
       {/* Run Algo */}

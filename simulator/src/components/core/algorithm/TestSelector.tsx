@@ -27,6 +27,7 @@ interface TestSelectorProps {
   setSelectedTestEnum: React.Dispatch<React.SetStateAction<AlgoTestEnum>>;
   selectedTest: AlgoTestDataInterface; // For Managing Custom Obstacles
   setSelectedTest: React.Dispatch<React.SetStateAction<AlgoTestDataInterface>>; // For Managing Custom Obstacles
+  setAlgoRuntime: React.Dispatch<string>; // For reseting AlgoRuntime when changing the test
 }
 
 export const TestSelector = (props: TestSelectorProps) => {
@@ -35,6 +36,7 @@ export const TestSelector = (props: TestSelectorProps) => {
     setSelectedTestEnum,
     selectedTest,
     setSelectedTest,
+    setAlgoRuntime,
   } = props;
 
   const [isTestModalOpen, setIsTestModalOpen] = useState(false);
@@ -227,6 +229,7 @@ export const TestSelector = (props: TestSelectorProps) => {
                 isSelected={algoTest === selectedTestEnum}
                 setSelectedTestEnum={setSelectedTestEnum}
                 setIsTestModalOpen={setIsTestModalOpen}
+                setAlgoRuntime={setAlgoRuntime}
               />
             ))}
           </div>
@@ -241,6 +244,7 @@ interface TestItemProps {
   isSelected?: boolean;
   setSelectedTestEnum: React.Dispatch<React.SetStateAction<AlgoTestEnum>>;
   setIsTestModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setAlgoRuntime: React.Dispatch<string>; // For reseting AlgoRuntime when changing the test
 }
 
 const TestItem = (props: TestItemProps) => {
@@ -249,6 +253,7 @@ const TestItem = (props: TestItemProps) => {
     isSelected = false,
     setSelectedTestEnum,
     setIsTestModalOpen,
+    setAlgoRuntime,
   } = props;
 
   return (
@@ -257,6 +262,7 @@ const TestItem = (props: TestItemProps) => {
       onClick={() => {
         setSelectedTestEnum(test);
         setIsTestModalOpen(false);
+        setAlgoRuntime("");
       }}
     >
       {isSelected ? (
