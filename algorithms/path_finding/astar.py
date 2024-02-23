@@ -3,6 +3,7 @@ from math import pi
 import numpy as np
 import logging
 from typing import List, Optional
+import time
 
 from arena.map import Map
 from common.consts import (
@@ -104,6 +105,7 @@ class AStar:
         self.end = None
         self.x_bounds = None
         self.y_bounds = None
+        # self.collision_checking_time = 0
 
     def _goal(
         self,
@@ -125,9 +127,12 @@ class AStar:
         for v, s, d, mv, f in self.moves:
             nxt_pos = f(st)
             nxt_pos_tup = nxt_pos.snap().to_tuple()
-
+            
+            # collision_checking_start_time = time.time()
             if nxt_pos_tup in self.closed or has_collision(st, mv, self.map):
+                # self.collision_checking_time += time.time() - collision_checking_start_time
                 continue
+            # self.collision_checking_time += time.time() - collision_checking_start_time
 
             penalty = 0
             if v != node.v or s != node.s:
@@ -166,7 +171,8 @@ class AStar:
         st: "Position",
         end: "Position",
     ) -> List["Node"]:
-
+        start_time = time.time()
+        # self.collision_checking_time = 0
         logger.info(f'Start search from {st} to {end}')
         end_node = Node(end, end, 0, 0)
         self.end = end
@@ -183,6 +189,9 @@ class AStar:
 
             if self._goal(node.c_pos):
                 logger.info(f'Found goal {end_node}')
+                # print("Astar Search Runtime:", time.time() - start_time, "s")
+                # print("Astar Collision Checking Runtime:", self.collision_checking_time, "s")
+                # print()
                 return self._reconstruct(node) # AlgoOutput -> An array of `Node` from start to goal/end
 
             self.closed.append(tup)

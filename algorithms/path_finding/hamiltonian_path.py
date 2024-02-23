@@ -168,6 +168,8 @@ class HamiltonianSearch:
 
     
     def search(self, top_n: int = 3):
+        print("----- Start Hamiltonian Search -----")
+
         st = time.time()
         n = len(self.pos)
         m = int(n*n - n) # total paths to calc from pt to pt
@@ -230,6 +232,7 @@ class HamiltonianSearch:
                 loc_mn_path = path
                 min_perm = perm
             if f < 99999:
+                print("f < 99999")
                 print(f'Time (pathfinding) {time.time()-st2} s')
                 print(f'Total runtime {time.time()-st} s')
                 return perm, path
