@@ -138,6 +138,11 @@ This Algorithm Repo uses FASTAPI and HTTPS + JSON protocol to transmit infomatio
   commands: {
     cat: "control",
     value: string,
+    end_position: {
+      x: int,         // in cm
+      y: int,         // in cm
+      theta: float    // in radian
+    }
   }[]
 }
 ```

@@ -41,18 +41,19 @@ class AlgoInput(BaseModel):
   algo_type: AlgoType
 
 # Output
-class AlgoOutputSimulatorPosition(BaseModel):
+class AlgoOutputPosition(BaseModel):
   x: int # in cm
   y: int # in cm
   theta: float # in radian
 
 class AlgoOutputSimulator(BaseModel):
-  positions: list[AlgoOutputSimulatorPosition]
+  positions: list[AlgoOutputPosition]
   runtime: str
 
 class AlgoOutputLiveCommand(BaseModel):
   cat: str = "control"
   value: str
+  end_position: AlgoOutputPosition
 
 class AlgoOutputLive(BaseModel):
   commands: list[AlgoOutputLiveCommand]
