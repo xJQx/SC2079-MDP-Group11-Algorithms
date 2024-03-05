@@ -33,3 +33,6 @@ coverage.xml
 
 # env
 .venv/
+
+# Idea
+.idea/

@@ -48,6 +48,7 @@ class AlgoOutputSimulatorPosition(BaseModel):
   y: int # in cm
   theta: float # in radian
 
+
 class AlgoOutputSimulator(BaseModel):
   positions: list[AlgoOutputSimulatorPosition]
   runtime: str
@@ -56,6 +57,7 @@ class AlgoOutputLivePosition(BaseModel):
   x: int # in cm
   y: int # in cm
   d: int # Robot Face -> 1: North; 2: South; 3: East; 4: West
+
 
 class AlgoOutputLiveCommand(BaseModel):
   cat: str = "control"
@@ -112,14 +114,17 @@ def main(algo_input: AlgoInput):
   if algo_server_mode == AlgoInputMode.LIVE:
     stm_commands = []
 
+
     for path in paths:
       stm_commands.extend(convert_segments_to_commands(path))
+      
     
     algoOutputLiveCommands: list[AlgoOutputLiveCommand] = [] # Array of commands
     for command in stm_commands:
       algoOutputLiveCommands.append(AlgoOutputLiveCommand(
         cat="control",
-        value=command
+        value=command[0],
+        end_position=command[1]
       ))
 
     return algoOutputLiveCommands
