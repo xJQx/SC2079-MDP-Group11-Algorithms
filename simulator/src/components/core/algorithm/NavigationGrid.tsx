@@ -40,7 +40,7 @@ export const NavigationGrid = (props: NavigationGridProps) => {
         (o) => o.x === x && o.y === y
       )[0];
       const remainingObstacles = prev.obstacles.filter(
-        (o) => o.x !== x && o.y !== y
+        (o) => o.x !== x || o.y !== y
       );
       const updated = {
         obstacles: [
