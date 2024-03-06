@@ -116,7 +116,11 @@ def main(algo_input: AlgoInput):
 
 
     for path in paths:
-      stm_commands.extend(convert_segments_to_commands(path))
+      commands = convert_segments_to_commands(path)
+      stm_commands.extend(commands)
+
+      # Add SNAP1 command after each path (from one obstacle to another) (For Raspberry Pi Team to know when to scan the image)
+      stm_commands.append(["SNAP1", commands[-1][1]])
       
     
     algoOutputLiveCommands: list[AlgoOutputLiveCommand] = [] # Array of commands
@@ -126,6 +130,13 @@ def main(algo_input: AlgoInput):
         value=command[0],
         end_position=command[1]
       ))
+    
+    # Add FIN as the last command (For Raspberry Pi Team to know that the algorithm has ended)
+    algoOutputLiveCommands.append(AlgoOutputLiveCommand(
+      cat="control",
+      value="FIN",
+      end_position=algoOutputLiveCommands[-1].end_position
+    ))
 
     return algoOutputLiveCommands
 
@@ -181,9 +192,12 @@ async def algo_simulator_test():
         { "id": 1, "x": 30, "y": 20, "d": 4 },
         { "id": 2, "x": 2, "y": 36, "d": 2 },
       ],
-      "mode": AlgoInputMode.SIMULATOR
-    }
+      "mode": 0 # Task 1
+    },
+    "server_mode": AlgoInputMode.SIMULATOR,
+    "algo_type": AlgoType.EXHAUSTIVE_ASTAR,
   }
+
   positions = main(simulator_algo_input)
   
   return { "positions": positions }
@@ -197,6 +211,27 @@ async def algo_simulator(algo_input: AlgoInput):
   runtime = time.time() - start_time # in seconds
 
   return { "positions": positions, "runtime": "{:.4f} seconds".format(runtime) }
+
+
+@app.get("/algo/algo/simple-test", response_model=AlgoOutputLive, tags=["Algorithm"])
+async def algo_simulator_test():
+  """To test algo and endpoint on the server in live mode"""
+  # Basic Mock Data
+  live_algo_input: AlgoInput = {
+    "cat": "obstacles",
+    "value": {
+      "obstacles": [
+        { "id": 1, "x": 30, "y": 20, "d": 4 },
+        { "id": 2, "x": 2, "y": 36, "d": 2 },
+      ],
+      "mode": 0 # Task 1
+    },
+    "server_mode": AlgoInputMode.LIVE,
+    "algo_type": AlgoType.EXHAUSTIVE_ASTAR,
+  }
+  commands = main(live_algo_input)
+  
+  return { "commands": commands }
 
 @app.post("/algo/live", response_model=AlgoOutputLive, tags=["Algorithm"])
 async def algo_live(algo_input: AlgoInput):
