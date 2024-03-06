@@ -110,37 +110,63 @@ def convert_segments_to_commands(
     #             result.append("BR"+"{:06.2f}".format((segment.d / (2*DIST_BR[2])) * 180))
 
     # New
+    GRID_CELL_CM = 10
     for segment in segments:
         if segment.v == 1:
             if segment.s == -1:
                 result.append([
                     "left,78,forward,0",
-                    AlgoOutputLivePosition(x = segment.pos.x, y = segment.pos.y, d = convertThetatoNumericDirection(segment.pos.theta))
+                    AlgoOutputLivePosition(
+                        x = segment.pos.x // GRID_CELL_CM,
+                        y = segment.pos.y // GRID_CELL_CM,
+                        d = convertThetatoNumericDirection(segment.pos.theta)
+                    )
                 ])
             elif segment.s == 0:
                 result.append([
-                    "center,0,forward," + str(int(segment.d)), AlgoOutputLivePosition(x = segment.pos.x, y = segment.pos.y, d = convertThetatoNumericDirection(segment.pos.theta))
+                    "center,0,forward," + str(int(segment.d)),
+                    AlgoOutputLivePosition(
+                        x = segment.pos.x // GRID_CELL_CM,
+                        y = segment.pos.y // GRID_CELL_CM,
+                        d = convertThetatoNumericDirection(segment.pos.theta)
+                    )
                 ])
             elif segment.s == 1:
                 result.append([
                     "right,105,forward,0",
-                    AlgoOutputLivePosition(x = segment.pos.x, y = segment.pos.y, d = convertThetatoNumericDirection(segment.pos.theta))
+                    AlgoOutputLivePosition(
+                        x = segment.pos.x // GRID_CELL_CM,
+                        y = segment.pos.y // GRID_CELL_CM,
+                        d = convertThetatoNumericDirection(segment.pos.theta)
+                    )
                 ])
         elif segment.v == -1:
             if segment.s == -1:
                 result.append([
                     "right,110,reverse,0",
-                    AlgoOutputLivePosition(x = segment.pos.x, y = segment.pos.y, d = convertThetatoNumericDirection(segment.pos.theta))
+                    AlgoOutputLivePosition(
+                        x = segment.pos.x // GRID_CELL_CM,
+                        y = segment.pos.y // GRID_CELL_CM,
+                        d = convertThetatoNumericDirection(segment.pos.theta)
+                    )
                 ])
             elif segment.s == 0:
                 result.append([
                     "center,0,reverse," + str(int(segment.d)),
-                    AlgoOutputLivePosition(x = segment.pos.x, y = segment.pos.y, d = convertThetatoNumericDirection(segment.pos.theta))
+                    AlgoOutputLivePosition(
+                        x = segment.pos.x // GRID_CELL_CM,
+                        y = segment.pos.y // GRID_CELL_CM,
+                        d = convertThetatoNumericDirection(segment.pos.theta)
+                    )
                 ])
             elif segment.s == 1:
                 result.append([
                     "left,70,reverse,0",
-                    AlgoOutputLivePosition(x = segment.pos.x, y = segment.pos.y, d = convertThetatoNumericDirection(segment.pos.theta))
+                    AlgoOutputLivePosition(
+                        x = segment.pos.x // GRID_CELL_CM,
+                        y = segment.pos.y // GRID_CELL_CM,
+                        d = convertThetatoNumericDirection(segment.pos.theta)
+                    )
                 ])
 
     # [Merge Commands] Combine similar commands together to reduce the number of commands (to improve Robot Execution time)
