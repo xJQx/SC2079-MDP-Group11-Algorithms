@@ -15,7 +15,10 @@ import { convertThetaToDirection } from "./conversions";
  * */
 export const createHTMLGrid = (
   robotPosition: Position,
-  obstacles: Obstacle[]
+  obstacles: Obstacle[],
+  canAddObstacle: boolean,
+  handleAddObstacle: (x: number, y: number, d: number) => void,
+  handleChangeObstacleDirection: (x: number, y: number, new_d: number) => void
 ) => {
   const grid: React.ReactNode[][] = [];
 
@@ -50,12 +53,17 @@ export const createHTMLGrid = (
             y,
             obstacles.filter(
               (obstacle) => obstacle.x === x && obstacle.y === y
-            )[0].d
+            )[0].d,
+            canAddObstacle,
+            handleChangeObstacleDirection
           )
         );
       }
       // Empty Cell
-      else currentRow.push(createHTMLGridCellEmpty(x, y));
+      else
+        currentRow.push(
+          createHTMLGridCellEmpty(x, y, canAddObstacle, handleAddObstacle)
+        );
     }
     grid.push(currentRow);
   }
@@ -67,9 +75,25 @@ export const createHTMLGrid = (
  * Creates a `<td />` for an empty cell
  * @used_by createHTMLGrid()
  */
-const createHTMLGridCellEmpty = (x: number, y: number) => {
+const createHTMLGridCellEmpty = (
+  x: number,
+  y: number,
+  canAddObstacle: boolean,
+  handleAddObstacle: (x: number, y: number, d: number) => void
+) => {
+  if (!canAddObstacle) {
+    return (
+      <td id={`cell-${x}-${y}`} className="border border-orange-900 w-8 h-8" />
+    );
+  }
+
   return (
-    <td id={`cell-${x}-${y}`} className="border border-orange-900 w-8 h-8" />
+    <td
+      id={`cell-${x}-${y}`}
+      className="border border-orange-900 w-8 h-8 cursor-pointer hover:bg-amber-400 hover:border-t-4 hover:border-t-red-700"
+      onClick={() => handleAddObstacle(x, y, 1)} // Default North Facing
+      title="Add obstacle"
+    />
   );
 };
 
@@ -99,7 +123,9 @@ const createHTMLGridCellRobot = (
 const createHTMLGridCellObstacle = (
   x: number,
   y: number,
-  direction: ObstacleDirection
+  direction: ObstacleDirection,
+  canChangeObstacleDirection: boolean,
+  handleChangeObstacleDirection: (x: number, y: number, new_d: number) => void
 ) => {
   let imageFaceBorderClassName = "";
   switch (direction) {
@@ -117,10 +143,23 @@ const createHTMLGridCellObstacle = (
       break;
   }
 
+  if (!canChangeObstacleDirection) {
+    return (
+      <td
+        id={`cell-${x}-${y}`}
+        className={`border border-orange-900 w-8 h-8 align-middle text-center bg-amber-400 ${imageFaceBorderClassName}`}
+      />
+    );
+  }
+
   return (
     <td
       id={`cell-${x}-${y}`}
-      className={`border border-orange-900 w-8 h-8 align-middle text-center bg-amber-400 ${imageFaceBorderClassName}`}
+      className={`border border-orange-900 w-8 h-8 align-middle text-center bg-amber-400 ${imageFaceBorderClassName} cursor-pointer hover:bg-amber-500`}
+      title="Change obstacle direction"
+      onClick={() =>
+        handleChangeObstacleDirection(x, y, (direction.valueOf() % 4) + 1)
+      }
     />
   );
 };

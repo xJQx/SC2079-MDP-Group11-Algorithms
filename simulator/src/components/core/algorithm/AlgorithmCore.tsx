@@ -278,6 +278,8 @@ export const AlgorithmCore = () => {
       <NavigationGrid
         robotPosition={currentRobotPosition ?? ROBOT_INITIAL_POSITION}
         obstacles={selectedTest.obstacles}
+        canAddObstacle={selectedTestEnum === AlgoTestEnum.Custom}
+        setSelectedTest={setSelectedTest}
       />
     </CoreContainter>
   );
