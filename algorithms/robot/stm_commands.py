@@ -129,7 +129,7 @@ def convert_segments_to_commands(
         elif segment.v == -1:
             if segment.s == -1:
                 result.append([
-                    "left,72,reverse,0",
+                    "right,72,reverse,0",
                     AlgoOutputLivePosition(x = segment.pos.x, y = segment.pos.y, d = convertThetatoNumericDirection(segment.pos.theta))
                 ])
             elif segment.s == 0:
@@ -139,7 +139,7 @@ def convert_segments_to_commands(
                 ])
             elif segment.s == 1:
                 result.append([
-                    "right,105,reverse,0",
+                    "left,105,reverse,0",
                     AlgoOutputLivePosition(x = segment.pos.x, y = segment.pos.y, d = convertThetatoNumericDirection(segment.pos.theta))
                 ])
 

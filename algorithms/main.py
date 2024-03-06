@@ -82,7 +82,7 @@ def main(algo_input: AlgoInput):
   algo_task_mode = algo_input["value"]["mode"]
 
   # Obstacles
-  obstacles = _extract_obstacles_from_input(algo_input["value"]["obstacles"])
+  obstacles = _extract_obstacles_from_input(algo_input["value"]["obstacles"], algo_server_mode)
 
   # Start Position
   start_position = Position(x=0, y=0, theta=pi/2)
@@ -140,16 +140,21 @@ def main(algo_input: AlgoInput):
 
     return algoOutputLiveCommands
 
-def _extract_obstacles_from_input(input_obstacles):
+def _extract_obstacles_from_input(input_obstacles, algo_server_mode):
   """
   Helper function to convert input obstacles to `Obstacle` object accepted by the algorithm
   """
   obstacles = []
 
+  grid_pos_to_c_pos_multiplier = SNAP_COORD
+  if algo_server_mode == AlgoInputMode.LIVE:
+    # Live mode uses 10cm grid format (so need to *2 to align with algo's 5cm grid format)
+    grid_pos_to_c_pos_multiplier *= 2
+
   for obstacle in input_obstacles:
     obstacles.append(Obstacle(
-      x=obstacle["x"] * SNAP_COORD,
-      y=obstacle["y"] * SNAP_COORD,
+      x=obstacle["x"] * grid_pos_to_c_pos_multiplier,
+      y=obstacle["y"] * grid_pos_to_c_pos_multiplier,
       facing=Int_to_Direction_mappings[str(obstacle["d"])]
     ))
 
@@ -189,8 +194,8 @@ async def algo_simulator_test():
     "cat": "obstacles",
     "value": {
       "obstacles": [
-        { "id": 1, "x": 30, "y": 20, "d": 4 },
-        { "id": 2, "x": 2, "y": 36, "d": 2 },
+        { "id": 1, "x": 30, "y": 20, "d": 4 }, # 5cm grid (x, y)
+        { "id": 2, "x": 2, "y": 36, "d": 2 }, # 5cm grid (x, y)
       ],
       "mode": 0 # Task 1
     },
@@ -213,16 +218,16 @@ async def algo_simulator(algo_input: AlgoInput):
   return { "positions": positions, "runtime": "{:.4f} seconds".format(runtime) }
 
 
-@app.get("/algo/algo/simple-test", response_model=AlgoOutputLive, tags=["Algorithm"])
-async def algo_simulator_test():
+@app.get("/algo/live/simple-test", response_model=AlgoOutputLive, tags=["Algorithm"])
+async def algo_live_test():
   """To test algo and endpoint on the server in live mode"""
   # Basic Mock Data
   live_algo_input: AlgoInput = {
     "cat": "obstacles",
     "value": {
       "obstacles": [
-        { "id": 1, "x": 30, "y": 20, "d": 4 },
-        { "id": 2, "x": 2, "y": 36, "d": 2 },
+        { "id": 1, "x": 15, "y": 10, "d": 4 }, # 10cm grid (x, y)
+        { "id": 2, "x": 1, "y": 18, "d": 2 }, # 10cm grid (x, y)
       ],
       "mode": 0 # Task 1
     },
