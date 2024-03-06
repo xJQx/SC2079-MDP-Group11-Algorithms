@@ -70,8 +70,8 @@ DIST_BR = WPS_BR[-1][0], WPS_BR[-1][1], _circum(BR_A, BR_B)/4
 
 PENALTY_STOP = 40
 MAX_THETA_ERR = math.pi / 12
-MAX_X_ERR = 5, 5  # L, R
-MAX_Y_ERR = 7.5, 35 # U, D
+MAX_X_ERR = 5, 5  # L, R (Configurable: Change to edit the node boundaries)
+MAX_Y_ERR = 7.5, 35 # U, D (Configurable: Change to edit the node boundaries)
 
 # +---------------------+
 # | obstacle dimensions |

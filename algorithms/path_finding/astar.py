@@ -16,7 +16,9 @@ from common.consts import (
     PENALTY_STOP,
     MAX_THETA_ERR,
     MAX_X_ERR,
-    MAX_Y_ERR
+    MAX_Y_ERR,
+    MAP_WIDTH,
+    MAP_HEIGHT,
 )
 from common.enums import Movement
 from common.types import Position
@@ -161,10 +163,13 @@ class AStar:
         end = np.array([self.end.x, self.end.y])
         _TR = end + vh * MAX_X_ERR[1] + vv * MAX_Y_ERR[0]
         _BL = end - vh * MAX_X_ERR[0] - vv * MAX_Y_ERR[1]
-
+        
         self.x_bounds = sorted([_TR[0], _BL[0]])
         self.y_bounds = sorted([_TR[1], _BL[1]])
 
+        # Ensure that the range of the x_bounds and y_bounds are within the MAP DIMENSIONS [0, 200]
+        self.x_bounds = [max(0, self.x_bounds[0]), min(self.x_bounds[1], MAP_WIDTH)]
+        self.y_bounds = [max(0, self.y_bounds[0]), min(self.y_bounds[1], MAP_HEIGHT)]
 
     def search(
         self,
