@@ -12,6 +12,8 @@ from common.utils import euclidean
 from path_finding.astar import AStar, Node
 
 
+MAX_ASTAR_F_COST = 99999
+
 logger = logging.getLogger('HAMILTONIAN PATH')
 
 # `knn()` -> Not Used
@@ -107,7 +109,7 @@ class SearchProcess(mp.Process):
             case AlgoType.EXHAUSTIVE_ASTAR:
                 # Returns astar 'f' cost
                 path = self.astar.search(self.pos[st], self.pos[end])
-                return path[-1].f if path else 99999
+                return path[-1].f if path else MAX_ASTAR_F_COST
             case AlgoType.EUCLIDEAN:
                 # Return Euclidean Distance
                 start_pos = self.pos[st]
@@ -172,7 +174,7 @@ class HamiltonianSearch:
 
         st = time.time()
         n = len(self.pos)
-        m = int(n*n - n) # total paths to calc from pt to pt
+        m = int(n*n - n - (n-1)) # total paths to calc from pt to pt (excluding from pt_a to pt_a and from pt_a to 0)
         perms = _permutate(n, True)
         edges = [[0 for _ in range(n)] for _ in range(n)]
         todo = mp.Queue() # (r, c)
@@ -180,9 +182,10 @@ class HamiltonianSearch:
 
         for r in range(n):
             for c in range(n):
-                if r != c:
-                    todo.put((r, c)) 
+                if r != c and c != 0:
+                    todo.put((r, c))
 
+        # Create multiple Threads/Process and starts them
         for i in range(self.n):
             p = SearchProcess(self.pos, self.astar, todo, done, i, self.algo_type)
             p.daemon = True
@@ -222,7 +225,7 @@ class HamiltonianSearch:
                     prev = segment[-1].c_pos
                     f += segment[-1].f
                 else:
-                    f += 99999
+                    f += MAX_ASTAR_F_COST
 
                 if f > loc_mn_f:
                     break
@@ -231,8 +234,8 @@ class HamiltonianSearch:
                 loc_mn_f = f
                 loc_mn_path = path
                 min_perm = perm
-            if f < 99999:
-                print("f < 99999")
+            if f < MAX_ASTAR_F_COST:
+                print("f < MAX_ASTAR_F_COST")
                 print(f'Time (pathfinding) {time.time()-st2} s')
                 print(f'Total runtime {time.time()-st} s')
                 return perm, path
