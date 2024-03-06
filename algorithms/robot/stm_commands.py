@@ -123,7 +123,7 @@ def convert_segments_to_commands(
                 ])
             elif segment.s == 1:
                 result.append([
-                    "right,100,forward,0",
+                    "right,105,forward,0",
                     AlgoOutputLivePosition(x = segment.pos.x, y = segment.pos.y, d = convertThetatoNumericDirection(segment.pos.theta))
                 ])
         elif segment.v == -1:
