@@ -161,7 +161,7 @@ def convert_segments_to_commands(
                 ])
             elif segment.s == 1:
                 result.append([
-                    "left,70,reverse,0",
+                    "left,72,reverse,0",
                     AlgoOutputLivePosition(
                         x = segment.pos.x // GRID_CELL_CM,
                         y = segment.pos.y // GRID_CELL_CM,
