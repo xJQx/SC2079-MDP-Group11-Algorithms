@@ -6,6 +6,11 @@ import { AlgoTestCustom } from "./custom";
 import { AlgoTestObstacles_5_Basic } from "./obstacles_5";
 import { AlgoTestObstacles_7 } from "./obstacles_7";
 import { AlgoTestShapes_V } from "./shapes";
+import {
+  AlgoTestCollisionCheck_A,
+  AlgoTestCollisionCheck_B,
+  AlgoTestCollisionCheck_C,
+} from "./collision_check";
 
 /** Interface for Algorithm Test Data
  * @param obstacles An array of Obstacles.
@@ -22,6 +27,9 @@ export enum AlgoTestEnum {
   Obstacles_7 = "7 Obstacles",
   Shapes_V = "V Shape",
   Obstacles_5_Basic = "5 Obstacles (Basic)",
+  AlgoTestCollisionCheck_A = "Collision Checking (A)",
+  AlgoTestCollisionCheck_B = "Collision Checking (B)",
+  AlgoTestCollisionCheck_C = "Collision Checking (C)",
 }
 
 export const AlgoTestEnumsList = [
@@ -32,6 +40,9 @@ export const AlgoTestEnumsList = [
   AlgoTestEnum.Obstacles_7,
   AlgoTestEnum.Shapes_V,
   AlgoTestEnum.Obstacles_5_Basic,
+  AlgoTestEnum.AlgoTestCollisionCheck_A,
+  AlgoTestEnum.AlgoTestCollisionCheck_B,
+  AlgoTestEnum.AlgoTestCollisionCheck_C,
 ];
 
 export const AlgoTestEnumMapper = {
@@ -42,6 +53,9 @@ export const AlgoTestEnumMapper = {
   [AlgoTestEnum.Obstacles_7]: AlgoTestObstacles_7,
   [AlgoTestEnum.Shapes_V]: AlgoTestShapes_V,
   [AlgoTestEnum.Obstacles_5_Basic]: AlgoTestObstacles_5_Basic,
+  [AlgoTestEnum.AlgoTestCollisionCheck_A]: AlgoTestCollisionCheck_A,
+  [AlgoTestEnum.AlgoTestCollisionCheck_B]: AlgoTestCollisionCheck_B,
+  [AlgoTestEnum.AlgoTestCollisionCheck_C]: AlgoTestCollisionCheck_C,
 };
 
 // Specific Test Exports
@@ -52,3 +66,8 @@ export { AlgoTestCorners } from "./corners";
 export { AlgoTestObstacles_7 } from "./obstacles_7";
 export { AlgoTestShapes_V } from "./shapes";
 export { AlgoTestObstacles_5_Basic } from "./obstacles_5";
+export {
+  AlgoTestCollisionCheck_A,
+  AlgoTestCollisionCheck_B,
+  AlgoTestCollisionCheck_C,
+} from "./collision_check";
