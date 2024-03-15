@@ -11,6 +11,7 @@ import {
   AlgoTestCollisionCheck_B,
   AlgoTestCollisionCheck_C,
 } from "./collision_check";
+import { AlgoTestOfficialMockLayout } from "./official_mock_layout";
 
 /** Interface for Algorithm Test Data
  * @param obstacles An array of Obstacles.
@@ -30,6 +31,7 @@ export enum AlgoTestEnum {
   AlgoTestCollisionCheck_A = "Collision Checking (A)",
   AlgoTestCollisionCheck_B = "Collision Checking (B)",
   AlgoTestCollisionCheck_C = "Collision Checking (C)",
+  AlgoTestOfficialMockLayout = "Official Mock Layout",
 }
 
 export const AlgoTestEnumsList = [
@@ -43,6 +45,7 @@ export const AlgoTestEnumsList = [
   AlgoTestEnum.AlgoTestCollisionCheck_A,
   AlgoTestEnum.AlgoTestCollisionCheck_B,
   AlgoTestEnum.AlgoTestCollisionCheck_C,
+  AlgoTestEnum.AlgoTestOfficialMockLayout,
 ];
 
 export const AlgoTestEnumMapper = {
@@ -56,6 +59,7 @@ export const AlgoTestEnumMapper = {
   [AlgoTestEnum.AlgoTestCollisionCheck_A]: AlgoTestCollisionCheck_A,
   [AlgoTestEnum.AlgoTestCollisionCheck_B]: AlgoTestCollisionCheck_B,
   [AlgoTestEnum.AlgoTestCollisionCheck_C]: AlgoTestCollisionCheck_C,
+  [AlgoTestEnum.AlgoTestOfficialMockLayout]: AlgoTestOfficialMockLayout,
 };
 
 // Specific Test Exports
@@ -71,3 +75,4 @@ export {
   AlgoTestCollisionCheck_B,
   AlgoTestCollisionCheck_C,
 } from "./collision_check";
+export { AlgoTestOfficialMockLayout } from "./official_mock_layout";
