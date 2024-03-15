@@ -54,6 +54,7 @@ class Map:
 
 
     def _within_bounds(self, x: float, y: float) -> bool:
+        """Checks if (x, y) is within the boundary of the Map"""
         return (
             -EDGE_ERR <= x <= MAP_WIDTH + EDGE_ERR
             and -EDGE_ERR <= y <= MAP_HEIGHT + EDGE_ERR
@@ -61,12 +62,14 @@ class Map:
     
 
     def is_valid(self, pos: Position, obstacles: List["Obstacle"]) -> bool:
+        # Robot
         r_origin = np.array([pos.x, pos.y])
         r_vec_up = calc_vector(pos.theta, ROBOT_HEIGHT)
         r_vec_right = calc_vector(
             pos.theta - pi / 2, ROBOT_WIDTH
         )
 
+        # Check if Robot is within the bound of the map
         if not (
             self._within_bounds(*r_origin)
             and self._within_bounds(*(r_origin + r_vec_up))
@@ -75,6 +78,7 @@ class Map:
         ):
             return False
 
+        # Robot Segments / Edges
         r_segments = [
             (r_origin, r_origin + r_vec_up),  # left edge
             (r_origin, r_origin + r_vec_right),  # btm edge
@@ -82,6 +86,7 @@ class Map:
             (r_origin + r_vec_right, r_origin + r_vec_right + r_vec_up),  # right edge
         ]
 
+        # Robot Corners
         r_corners = [
             r_origin,  # btm left
             r_origin + r_vec_right,  # btm right
@@ -89,15 +94,15 @@ class Map:
             r_origin + r_vec_up + r_vec_right,  # top right
         ]
 
-        # for every obstacle, check if any of the 4 obstacle corners lies within the robot
-        # for obs in self.obstacles:
-
+        # For every obstacle, check if any of the 4 obstacle corners lies within the robot
         for obs in obstacles:
+            # Obstacle x and y bounds
             o_btm = obs.y + EDGE_ERR
             o_left = obs.x + EDGE_ERR
             o_top = obs.y + OBSTACLE_WIDTH - EDGE_ERR
             o_right = obs.x + OBSTACLE_WIDTH - EDGE_ERR
 
+            # Return False if Robot 4 corners' (x, y) is inside the obstacle (x, y) boundary
             for cx, cy in r_corners:
                 if o_left <= cx <= o_right and o_btm <= cy <= o_top:
                     return False
@@ -110,13 +115,16 @@ class Map:
             ):
                 crosses = 0
                 for (st_x, st_y), (end_x, end_y) in r_segments:
+                    # Robot edge is entirely above or below obstacle's y coordinate
                     if (st_y > o_y and end_y > o_y) or (st_y < o_y and end_y < o_y):
                         continue
-
+                    
+                    # Vertical Robot edge
                     if (end_x - st_x) == 0:
                         intersect_x = st_x
+                    # Non-vertical Robot edge
                     else:
-                        m = (end_y - st_y) / (end_x - st_x)
+                        m = (end_y - st_y) / (end_x - st_x) # Gradient
                         if m == 0:
                             intersect_x = min(st_x, end_x)
                         else:
@@ -126,12 +134,16 @@ class Map:
                     return False
         return True
     
-
     def priority_obs(
         self,
         pos: "Position",
         move: "Movement"
     ) -> List["Obstacle"]:
+        """
+            This function helps identify obstacles that are potentially in the path of the robot based on
+            its current position and movement direction,
+            allowing the robot to prioritize its actions accordingly.
+        """
         v_t = calc_vector(pos.theta, 1)
         v_r = calc_vector(pos.theta - pi/2, 1)
 
@@ -142,15 +154,6 @@ class Map:
 
         x_bounds = sorted([br[0], tl[0]])
         y_bounds = sorted([br[1], tl[1]])
-
-        # print()
-        # for o in self.obstacles:
-        #     print(o.x, o.y, o.facing, o.middle)
-
-
-        # print(pos, v_t, v_r)
-        # print(x_bounds)
-        # print(y_bounds)
 
         return list(filter(lambda o:x_bounds[0]<o.middle[0]<x_bounds[1] and y_bounds[0]<o.middle[1]<y_bounds[1], self.obstacles))
     
