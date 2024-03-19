@@ -109,19 +109,6 @@ def convert_segments_to_commands(
     #         elif segment.s == 1:
     #             result.append("BR"+"{:06.2f}".format((segment.d / (2*DIST_BR[2])) * 180))
 
-    # Early Stopping (For Straight Movement)
-    # To stop the robot's straight movement early by x cm for the robot to move the desired straight distance (as the robot drift slightly forward after stopping due to speed)
-    FORWARD_STRAIGHT_EARLY_STOP_DISTANCE_CM = -1 # Fixed (cm)
-    def _get_reverse_straight_late_stop_distance(distance: int):
-        """
-            To stop the robot's straight movement slightly later to get the actual desired distance to be travelled by the robot.
-            Value (in cm) is measured via trial and error
-        """
-        if distance < 50:
-            return distance+1
-        else:
-            return distance+3
-
     # New
     GRID_CELL_CM = 10
     for segment in segments:
@@ -137,7 +124,7 @@ def convert_segments_to_commands(
                 ])
             elif segment.s == 0:
                 result.append([
-                    "center,0,forward," + str(int(segment.d) + FORWARD_STRAIGHT_EARLY_STOP_DISTANCE_CM),
+                    "center,0,forward," + str(int(segment.d)),
                     AlgoOutputLivePosition(
                         x = segment.pos.x // GRID_CELL_CM,
                         y = segment.pos.y // GRID_CELL_CM,
@@ -165,7 +152,7 @@ def convert_segments_to_commands(
                 ])
             elif segment.s == 0:
                 result.append([
-                    "center,0,reverse," + str(_get_reverse_straight_late_stop_distance(int(segment.d))),
+                    "center,0,reverse," + str(int(segment.d)),
                     AlgoOutputLivePosition(
                         x = segment.pos.x // GRID_CELL_CM,
                         y = segment.pos.y // GRID_CELL_CM,
@@ -201,7 +188,41 @@ def convert_segments_to_commands(
             else:
                 resultCombined.append(result[i])
                 n += 1
+    
+    def _get_translated_straight_distance(direction: str, distance: int) -> int:
+        """
+            To stop the robot's straight movement slightly later to get the actual desired distance to be travelled by the robot.
+            Value (in cm) is measured via trial and error
 
+            Parameter:
+                direction: Robot's direction
+                distance: Distance that the Robot should travel physically.
+        """
+        # For Stop Command
+        if distance == 0:
+            return 0
+        
+        if direction == "forward":
+            return distance-1
+        elif direction == "reverse":
+            if distance < 50:
+                return distance+1
+            else:
+                return distance+3
+    
+    # Get translated straight distance to early/late stop the robot to get desired distance travelled
+    for i in range(len(resultCombined)):
+        result = resultCombined[i][0]
+        split_result = result.split(",")
+
+        # Skip if command is a turn command
+        if split_result[0] != "center":
+            continue
+
+        direction, distance = split_result[2], int(split_result[3])
+        split_result[3] = str(_get_translated_straight_distance(direction, distance))
+        resultCombined[i][0] = ",".join(split_result)
+    
     return resultCombined
 
 def merge_cmds(cmds: List[List[str]]) -> str:
