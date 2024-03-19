@@ -165,7 +165,7 @@ def convert_segments_to_commands(
                 ])
             elif segment.s == 0:
                 result.append([
-                    "center,0,reverse," + _get_reverse_straight_late_stop_distance(str(int(segment.d))),
+                    "center,0,reverse," + str(_get_reverse_straight_late_stop_distance(int(segment.d))),
                     AlgoOutputLivePosition(
                         x = segment.pos.x // GRID_CELL_CM,
                         y = segment.pos.y // GRID_CELL_CM,
