@@ -109,6 +109,19 @@ def convert_segments_to_commands(
     #         elif segment.s == 1:
     #             result.append("BR"+"{:06.2f}".format((segment.d / (2*DIST_BR[2])) * 180))
 
+    # Early Stopping (For Straight Movement)
+    # To stop the robot's straight movement early by x cm for the robot to move the desired straight distance (as the robot drift slightly forward after stopping due to speed)
+    FORWARD_STRAIGHT_EARLY_STOP_DISTANCE_CM = -1 # Fixed (cm)
+    def _get_reverse_straight_late_stop_distance(distance: int):
+        """
+            To stop the robot's straight movement slightly later to get the actual desired distance to be travelled by the robot.
+            Value (in cm) is measured via trial and error
+        """
+        if distance < 50:
+            return distance+1
+        else:
+            return distance+3
+
     # New
     GRID_CELL_CM = 10
     for segment in segments:
@@ -124,7 +137,7 @@ def convert_segments_to_commands(
                 ])
             elif segment.s == 0:
                 result.append([
-                    "center,0,forward," + str(int(segment.d)),
+                    "center,0,forward," + str(int(segment.d)) + FORWARD_STRAIGHT_EARLY_STOP_DISTANCE_CM,
                     AlgoOutputLivePosition(
                         x = segment.pos.x // GRID_CELL_CM,
                         y = segment.pos.y // GRID_CELL_CM,
@@ -152,7 +165,7 @@ def convert_segments_to_commands(
                 ])
             elif segment.s == 0:
                 result.append([
-                    "center,0,reverse," + str(int(segment.d)),
+                    "center,0,reverse," + _get_reverse_straight_late_stop_distance(str(int(segment.d))),
                     AlgoOutputLivePosition(
                         x = segment.pos.x // GRID_CELL_CM,
                         y = segment.pos.y // GRID_CELL_CM,
