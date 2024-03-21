@@ -29,10 +29,10 @@ ROBOT_VERT_OFFSET = (ROBOT_HEIGHT - ROBOT_ACTUAL_HEIGHT) / 2
 
 # Measure (Using Bottom Left of Robot)
 # Indoor (SCSE Lab) - Radians are estimation (Start-End)/number_of_points
-WPS_FL_IN = [(-0.64, 7.23, 0.2618), (-2.56, 16.44, 0.5236), (-6.40, 24.99, 0.7854), (-13.43, 30.91, 1.0472), (-21.10, 33.54, 1.3090), (-27.5, 34.2, 1.5707963267948966)]
-WPS_FR_IN = [(0.81, 6.71, -0.2618), (2.425, 21.79, -0.5236), (9.7, 41.07, -0.7854), (22.63, 47.78, -1.0472), (38.8, 55.32, -1.3090), (48.5, 57, -1.5707963267948966)]
-WPS_BR_IN = [(22.38, -4.90, 0.2618), (34.53, -12.73, 0.5236), (41.57, -20.57, 0.7854), (46.04, -26.93, 1.0472), (48.6, -36.72, 1.3090), (48.6, -42.6, 1.5707963267948966)]
-WPS_BL_IN = [(-0.9613, -5.475, -0.2618), (-3.2042, -11.315, -0.5236), (-6.7289, -15.695, -0.7854), (-12.1761, -18.25, -1.0472), (-16.3415, -20.075, -1.3090), (-25.4, -21.1, -1.5707963267948966)]
+WPS_FL_IN = [(-0.64, 7.23, 0.2618), (-2.56, 14.44, 0.5236), (-6.40, 16.99, 0.7854), (-13.43, 20.91, 1.0472), (-16.10, 23.54, 1.3090), (-19.8, 25.3, 1.5707963267948966)]
+WPS_FR_IN = [(0.81, 6.71, -0.2618), (2.425, 15.79, -0.5236), (9.7, 35.07, -0.7854), (22.63, 41.78, -1.0472), (38.8, 49.32, -1.3090), (44.6, 51.3, -1.5707963267948966)]
+WPS_BR_IN = [(22.38, -4.90, 0.2618), (34.53, -12.73, 0.5236), (41.57, -20.57, 0.7854), (46.04, -26.93, 1.0472), (48.6, -36.72, 1.3090), (48.9, -43.1, 1.5707963267948966)]
+WPS_BL_IN = [(-0.9613, -5.475, -0.2618), (-3.2042, -11.315, -0.5236), (-6.7289, -15.695, -0.7854), (-12.1761, -18.25, -1.0472), (-16.3415, -20.075, -1.3090), (-29, -22.5, -1.5707963267948966)]
 
 # TODO: Measure (Using Bottom Left of Robot)
 # Outdoor (SCSE Corridor)
@@ -56,10 +56,10 @@ BUFFER = 5.01
   Ellipse Equation's `A` and `B` where `A` is the X radius / semi-major axis, and `B` is the Y radius / semi-minor axis
 """
 # Indoor (SCSE Lab)
-FL_A_IN, FL_B_IN = 27.5, 34.2
-FR_A_IN, FR_B_IN = 48.5, 57
-BR_A_IN, BR_B_IN = 48.6, 42.6
-BL_A_IN, BL_B_IN = 25.4, 21.1
+FL_A_IN, FL_B_IN = 19.8, 25.3
+FR_A_IN, FR_B_IN = 44.6, 51.3 
+BR_A_IN, BR_B_IN = 48.9, 43.1 
+BL_A_IN, BL_B_IN = 29, 22.5
 
 # Outdoor (SCSE Corridor)
 FL_A_OUT, FL_B_OUT = 15.1, 22.2 # TODO: Measure
@@ -121,7 +121,7 @@ BL_OUTER = BL_OUTER_IN if INDOOR else BL_OUTER_OUT
 BR_OUTER = BR_OUTER_IN if INDOOR else BR_OUTER_OUT
 
 # [TODO: Editable] To increase the boundaries to identify obstacles potentially in the path of the robot more accurately (before doing obstacle collision detection)
-BACKWARDS_A_B_MULTIPLIER = 1.5
+BACKWARDS_A_B_MULTIPLIER = 2
 
 FL_X_BOUND = [OBSTACLE_WIDTH/2 + FL_A - ROBOT_WIDTH/2 + ROBOT_HEIGHT - ROBOT_VERT_OFFSET, 
               OBSTACLE_WIDTH/2 + ROBOT_WIDTH]

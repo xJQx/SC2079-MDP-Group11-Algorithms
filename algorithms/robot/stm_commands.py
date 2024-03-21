@@ -133,7 +133,7 @@ def convert_segments_to_commands(
                 ])
             elif segment.s == 1:
                 result.append([
-                    "right,110,forward,0",
+                    "right,102,forward,0",
                     AlgoOutputLivePosition(
                         x = segment.pos.x // GRID_CELL_CM,
                         y = segment.pos.y // GRID_CELL_CM,
@@ -143,7 +143,7 @@ def convert_segments_to_commands(
         elif segment.v == -1:
             if segment.s == -1:
                 result.append([
-                    "right,111,reverse,0",
+                    "left,111,reverse,0",
                     AlgoOutputLivePosition(
                         x = segment.pos.x // GRID_CELL_CM,
                         y = segment.pos.y // GRID_CELL_CM,
@@ -161,7 +161,7 @@ def convert_segments_to_commands(
                 ])
             elif segment.s == 1:
                 result.append([
-                    "left,70,reverse,0",
+                    "right,71,reverse,0",
                     AlgoOutputLivePosition(
                         x = segment.pos.x // GRID_CELL_CM,
                         y = segment.pos.y // GRID_CELL_CM,
@@ -206,9 +206,9 @@ def convert_segments_to_commands(
             return distance-1
         elif direction == "reverse":
             if distance < 50:
-                return distance+1
+                return distance
             else:
-                return distance+3
+                return distance+2
     
     # Get translated straight distance to early/late stop the robot to get desired distance travelled
     for i in range(len(resultCombined)):
