@@ -121,7 +121,7 @@ BL_OUTER = BL_OUTER_IN if INDOOR else BL_OUTER_OUT
 BR_OUTER = BR_OUTER_IN if INDOOR else BR_OUTER_OUT
 
 # [TODO: Editable] To increase the boundaries to identify obstacles potentially in the path of the robot more accurately (before doing obstacle collision detection)
-BACKWARDS_A_B_MULTIPLIER = 2
+BACKWARDS_A_B_MULTIPLIER = 1.5
 
 FL_X_BOUND = [OBSTACLE_WIDTH/2 + FL_A - ROBOT_WIDTH/2 + ROBOT_HEIGHT - ROBOT_VERT_OFFSET, 
               OBSTACLE_WIDTH/2 + ROBOT_WIDTH]

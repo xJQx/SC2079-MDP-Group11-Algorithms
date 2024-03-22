@@ -95,12 +95,13 @@ class Map:
         ]
 
         # For every obstacle, check if any of the 4 obstacle corners lies within the robot
+        EXTRA_VIRTUAL_BOUNDARY = 0 # To increase the virtual boundary of the obstacle (in cm)
         for obs in obstacles:
             # Obstacle x and y bounds
-            o_btm = obs.y + EDGE_ERR
-            o_left = obs.x + EDGE_ERR
-            o_top = obs.y + OBSTACLE_WIDTH - EDGE_ERR
-            o_right = obs.x + OBSTACLE_WIDTH - EDGE_ERR
+            o_btm = obs.y + EDGE_ERR - EXTRA_VIRTUAL_BOUNDARY
+            o_left = obs.x + EDGE_ERR - EXTRA_VIRTUAL_BOUNDARY
+            o_top = obs.y + OBSTACLE_WIDTH - EDGE_ERR + EXTRA_VIRTUAL_BOUNDARY
+            o_right = obs.x + OBSTACLE_WIDTH - EDGE_ERR + EXTRA_VIRTUAL_BOUNDARY
 
             # Return False if Robot 4 corners' (x, y) is inside the obstacle (x, y) boundary
             for cx, cy in r_corners:
