@@ -18,6 +18,8 @@
 
 # Algorithm Simulator (Web)
 
+<img src="/public/simulator.png" />
+
 ## Setup Instructions
 
 \*Please ensure that you have `yarn` installed.
